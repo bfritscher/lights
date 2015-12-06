@@ -1,0 +1,21 @@
+.c {
+  width: 10px;
+  height: 10px;
+  font-size: 6px;
+  line-height: 8px;
+  text-align: center;
+  border: 1px solid grey;
+}
+
+#matrix {
+  transform-origin: 0 0;
+  margin: 20px;
+}
+
+#matrix.zoomout{
+  transform: scale3d(0.3,0.3,1);
+}
+
+.row:nth-child(8n){
+  border-bottom: 1px solid grey;
+}

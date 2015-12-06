@@ -1,0 +1,16 @@
+{
+  "name": "lights",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "^1.4.0",
+    "angular-animate": "^1.4.0",
+    "angular-route": "^1.4.0",
+    "angular-touch": "^1.4.0",
+    "angular-material": "~0.11.4"
+  },
+  "devDependencies": {
+    "angular-mocks": "^1.4.0"
+  },
+  "appPath": "app",
+  "moduleName": "lightsApp"
+}

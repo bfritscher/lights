@@ -1,0 +1,20 @@
+<div>
+  {{main.config.name}}
+  <input type="text" ng-model="main.currentName">
+  <md-button ng-click="main.load()">load</md-button>
+  <md-button ng-click="main.save()">save as</md-button>
+  <input type="number" ng-model="main.config.nbRows" ng-model-options="{ updateOn: 'blur' }">
+  <input type="number" ng-model="main.config.nbColumns" ng-model-options="{ updateOn: 'blur' }">
+  <input type="number" ng-model="main.config.rowSpace">
+  <input type="number" ng-model="main.config.columnSpace">
+  <input type="checkbox" ng-model="main.config.zoomout">
+  <input type="color" ng-model="main.config.color">
+</div>
+<div id="matrix" ng-class="{'zoomout': main.config.zoomout}">
+  <div class="row" layout="row" ng-repeat-start="row in main.config.data track by $index">
+    <div flex="none" ng-repeat-start="c in row track by $index" class="c" ng-mouseover="main.paint($event, row, $index)" ng-style="{'background-color': c}"></div>
+    <div flex="none" class="columnSpacer" ng-style="{width: main.config.columnSpace + 'px'}" ng-repeat-end>
+    </div>
+  </div>
+  <div ng-repeat-end class="row rowSpacer" flex ng-style="{height: main.config.rowSpace + 'px'}"></div>
+</div>
