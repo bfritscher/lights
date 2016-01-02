@@ -58,6 +58,10 @@ angular.module('lightsApp')
       }
     };
 
+    main.export = function(){
+        return JSON.stringify(main.config.data.map(function(r){ return r.map(function(i){ return i===0 || i==='none' ? 0 : 1;});}));
+    };
+
     main.load();
 
     $scope.$watch('main.config', function(oldVal, newVal){

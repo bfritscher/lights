@@ -1,0 +1,44 @@
+<input type="number" ng-model="preview.rowSpace">
+  <input type="number" ng-model="preview.columnSpace">
+<div id="matrix">
+  <div class="row" layout="row" ng-repeat-start="y in preview.range(preview.MATRIX_HEIGHT)">
+    <div flex="none" ng-mouseover="preview.sendXYOver(x, y)" ng-click="preview.sendXYClick(x, y)" ng-repeat-start="x in preview.range(preview.MATRIX_WIDTH)" class="c" ng-style="{'background-color': preview.getPixelColor(x, y)}"></div>
+    <div flex="none" class="columnSpacer" ng-style="{width: preview.columnSpace + 'px'}" ng-repeat-end>
+    </div>
+  </div>
+  <div ng-repeat-end class="row rowSpacer" flex ng-style="{height: preview.rowSpace + 'px'}"></div>
+</div>
+
+<h2>{{preview.queue[0].name}} interactions</h2>
+
+<div ng-repeat="param in preview.ANIMATIONS[preview.queue[0].name].params">
+    <md-button ng-if="param.type == 'button'" ng-click="preview.sendAction(param)">{{param.label}}</md-button>
+    <div ng-if="param.type.indexOf('xy') == 0">{{param.label}}</div>
+    <md-input-container ng-repeat="pp in param.params" ng-if="pp.type == 'text' || pp.type == 'number' || pp.type == 'color'">
+        <label>{{pp.label}}</label>
+        <input ng-model="pp.default" type="{{pp.type}}">
+    </md-input-container>
+</div>
+
+<h2>Add new animation</h2>
+
+<md-input-container>
+  <label>Animation</label>
+  <md-select ng-model="preview.selectedAnimationKey">
+    <md-option ng-value="key" ng-repeat="key in preview.keys(preview.ANIMATIONS)">{{preview.ANIMATIONS[key].description}} ({{key}})</md-option>
+  </md-select>
+</md-input-container>
+
+<div ng-repeat="param in preview.ANIMATIONS[preview.selectedAnimationKey].params">
+    <md-input-container ng-if="param.type == 'text' || param.type == 'number' || param.type == 'color'">
+        <label>{{param.label}}</label>
+        <input ng-model="param.default" type="{{param.type}}">
+    </md-input-container>
+</div>
+
+<md-button ng-click="preview.addAnimation(true)">Force Start</md-button>
+<md-button ng-click="preview.addAnimation(false)">Queue</md-button>
+
+<h2>Queue</h2>
+<md-button ng-click="preview.nextAnimation()">Next</md-button>
+<div ng-repeat="q in preview.queue">{{q.name}} <span ng-repeat="(k, v) in q.params">{{k}}: {{v}} </span> <md-button ng-if="$index > 0" ng-click="preview.removeAnimation(q.id)">Remove</md-button></div>

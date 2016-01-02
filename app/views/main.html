@@ -10,7 +10,7 @@
   <input type="checkbox" ng-model="main.config.zoomout">
   <input type="color" ng-model="main.config.color">
 </div>
-<div id="matrix" ng-class="{'zoomout': main.config.zoomout}">
+<div id="matrix" class="guidelines" ng-class="{'zoomout': main.config.zoomout}">
   <div class="row" layout="row" ng-repeat-start="row in main.config.data track by $index">
     <div flex="none" ng-repeat-start="c in row track by $index" class="c" ng-mouseover="main.paint($event, row, $index)" ng-style="{'background-color': c}"></div>
     <div flex="none" class="columnSpacer" ng-style="{width: main.config.columnSpace + 'px'}" ng-repeat-end>
@@ -18,3 +18,5 @@
   </div>
   <div ng-repeat-end class="row rowSpacer" flex ng-style="{height: main.config.rowSpace + 'px'}"></div>
 </div>
+
+<pre>{{main.export()}}</pre>
