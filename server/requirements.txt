@@ -1,0 +1,3 @@
+websocket-server
+twisted
+python-dotenv
