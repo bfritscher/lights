@@ -36,6 +36,25 @@ angular.module('lightsApp')
       preview.MATRIX_HEIGHT = 20;
       preview.MATRIX_WIDTH = 14;
 
+      preview.colorPickerOptions = {
+        preferredFormat: 'hex',
+        containerClassName: 'colorpicker',
+        flat: true,
+        showInitial: false,
+        localStorageKey: 'colorpicker',
+        showPalette: true,
+        showSelectionPalette: true,
+        chooseText: 'save to palette',
+        cancelText: '',
+        palette: [ '#001F3F', '#0074D9', '#7FDBFF', '#39CCCC',
+                   '#3D9970', '#2ECC40', '#01FF70', '#FFDC00',
+                   '#FF851B', '#FF4136', '#F012BE', '#B10DC9',
+                   '#85144B', '#FFFFFF', '#AAAAAA', '#DDDDDD',
+                   '#111111'
+        ]
+      };
+
+
       function connect(){
         // Connect to Web Socket
         ws = new WebSocket("ws://localhost:9001/");
@@ -48,6 +67,7 @@ angular.module('lightsApp')
                     preview.MATRIX_WIDTH = msg.MATRIX_WIDTH;
                     preview.ANIMATIONS = msg.ANIMATIONS;
                     preview.queue = msg.queue;
+                    preview.client_id = msg.client_id;
                 }
                 if ( msg.type === 'data') {
                     preview.matrixData = msg.data;

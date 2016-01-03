@@ -20,3 +20,8 @@
 .guidelines .row:nth-child(8n){
   border-bottom: 1px solid grey;
 }
+
+.colorpicker{
+    background-color: #FFF;
+    border: solid 1px #ECECEC;
+}

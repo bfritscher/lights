@@ -1,10 +1,11 @@
 <input type="number" ng-model="preview.rowSpace">
   <input type="number" ng-model="preview.columnSpace">
 <div id="matrix">
-  <div class="row" layout="row" ng-repeat-start="y in preview.range(preview.MATRIX_HEIGHT)">
+  <div class="row" layout="row"  layout-align="center center" ng-repeat-start="y in preview.range(preview.MATRIX_HEIGHT)">
+    <div flex></div>
     <div flex="none" ng-mouseover="preview.sendXYOver(x, y)" ng-click="preview.sendXYClick(x, y)" ng-repeat-start="x in preview.range(preview.MATRIX_WIDTH)" class="c" ng-style="{'background-color': preview.getPixelColor(x, y)}"></div>
-    <div flex="none" class="columnSpacer" ng-style="{width: preview.columnSpace + 'px'}" ng-repeat-end>
-    </div>
+    <div flex="initial" class="columnSpacer" ng-style="{width: preview.columnSpace + 'px'}" ng-hide="$last" ng-repeat-end></div>
+    <div flex></div>
   </div>
   <div ng-repeat-end class="row rowSpacer" flex ng-style="{height: preview.rowSpace + 'px'}"></div>
 </div>
@@ -14,10 +15,19 @@
 <div ng-repeat="param in preview.ANIMATIONS[preview.queue[0].name].params">
     <md-button ng-if="param.type == 'button'" ng-click="preview.sendAction(param)">{{param.label}}</md-button>
     <div ng-if="param.type.indexOf('xy') == 0">{{param.label}}</div>
-    <md-input-container ng-repeat="pp in param.params" ng-if="pp.type == 'text' || pp.type == 'number' || pp.type == 'color'">
-        <label>{{pp.label}}</label>
-        <input ng-model="pp.default" type="{{pp.type}}">
-    </md-input-container>
+    <div ng-repeat="pp in param.params">
+        <md-input-container ng-if="pp.type == 'text' || pp.type == 'number'">
+            <label>{{pp.label}}</label>
+            <input ng-model="pp.default" type="{{pp.type}}">
+        </md-input-container>
+        <md-input-container ng-if="pp.type == 'color'">
+            <span>{{pp.label}}</span>
+            <spectrum-colorpicker
+                ng-model="pp.default"
+                options="preview.colorPickerOptions"
+            ></spectrum-colorpicker>
+        </md-input-container>
+    </div>
 </div>
 
 <h2>Add new animation</h2>
@@ -30,10 +40,18 @@
 </md-input-container>
 
 <div ng-repeat="param in preview.ANIMATIONS[preview.selectedAnimationKey].params">
-    <md-input-container ng-if="param.type == 'text' || param.type == 'number' || param.type == 'color'">
+    <md-input-container ng-if="param.type == 'text' || param.type == 'number'">
         <label>{{param.label}}</label>
         <input ng-model="param.default" type="{{param.type}}">
     </md-input-container>
+    <md-input-container ng-if="param.type == 'color'">
+        <span>{{param.label}}</span>
+        <spectrum-colorpicker
+            ng-model="param.default"
+            options="preview.colorPickerOptions"
+        ></spectrum-colorpicker>
+    </md-input-container>
+
 </div>
 
 <md-button ng-click="preview.addAnimation(true)">Force Start</md-button>

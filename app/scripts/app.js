@@ -13,7 +13,8 @@ angular
     'ngAnimate',
     'ngRoute',
     'ngTouch',
-    'ngMaterial'
+    'ngMaterial',
+    'angularSpectrumColorpicker'
   ])
   .config(function ($routeProvider) {
     $routeProvider
