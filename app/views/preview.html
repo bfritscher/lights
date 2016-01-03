@@ -28,11 +28,15 @@
             ></spectrum-colorpicker>
         </md-input-container>
     </div>
-    <audio-player ng-if="param.type == 'audio'"></audio-player>
+    <audio-player ng-if="param.type == 'audio' && preview.com.config.client_id == preview.com.config.queue[0].client_id"></audio-player>
+    <p ng-if="param.type == 'audio' && preview.com.config.client_id != preview.com.config.queue[0].client_id">
+        To display your music add your own audio animation to the queue.
+    </p>
 </div>
 
-<h2>Add new animation</h2>
 
+
+<h2>Add new animation</h2>
 <md-input-container>
   <label>Animation</label>
   <md-select ng-model="preview.selectedAnimationKey">

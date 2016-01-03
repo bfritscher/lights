@@ -31,6 +31,7 @@ module.exports = function(config) {
       'bower_components/angular-material/angular-material.js',
       'bower_components/spectrum/spectrum.js',
       'bower_components/angular-spectrum-colorpicker/dist/angular-spectrum-colorpicker.min.js',
+      'bower_components/dropzone/dist/min/dropzone.min.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/scripts/**/*.js",

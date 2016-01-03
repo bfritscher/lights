@@ -33,10 +33,12 @@ function makeGradientColor(color1, color2, percent) {
                         makeColorPiece(newColor.b);
 }
 
+Dropzone.autoDiscover = false;
+
 angular.module('lightsApp')
   .directive('audioPlayer', function ($window, com) {
     return {
-      template: '<div></div>',
+      template: '<div><form class="dropzone" id="audio-dropzone"></form><p>{{filename}}</p></div>',
       restrict: 'E',
       link: function postLink(scope, element, attrs) {
 
@@ -49,15 +51,38 @@ angular.module('lightsApp')
     if (! $window.AudioContext) {
         if (! $window.webkitAudioContext) {
             $window.alert('no audiocontext found');
+            return;
         }
         window.AudioContext = window.webkitAudioContext;
     }
+    var myDropzone = new $window.Dropzone(element.find('form')[0], {
+        url: "/file/post",
+        parallelUploads: 1,
+        dictDefaultMessage: 'Drop file to play or click and browse..',
+        acceptedFiles: '.mp3,.ogg,.mp4,.webm,.m4a',
+        accept: function(file) {
+
+            if(javascriptNode){
+                removeAudioNodes();
+            }
+            setupAudioNodes(URL.createObjectURL(file));
+            scope.$apply(function(){
+                scope.filename = file.name;
+            });
+            myDropzone.removeFile(file);
+        }
+
+    });
+    myDropzone.on("error", function(file) {
+        myDropzone.removeFile(file);
+    });
+
     var context = new $window.AudioContext();
     var sourceNode;
     var analyser;
     var javascriptNode;
 
-    function setupAudioNodes() {
+    function setupAudioNodes(src) {
 
         // setup a javascript node
         javascriptNode = context.createScriptProcessor(2048, 1, 1);
@@ -81,18 +106,31 @@ angular.module('lightsApp')
         analyser.smoothingTimeConstant = 0.3;
         analyser.fftSize = Math.max(32, Math.pow( 2, Math.ceil( Math.log( com.config.MATRIX_WIDTH * 2 ) / Math.log( 2 ) ) ));
 
+
+        var audio = document.createElement('audio');
+        audio.setAttribute('src', src);
+        audio.setAttribute('controls', '');
+        audio.setAttribute('crossorigin', 'anonymous');
+        element[0].appendChild(audio);
+        sourceNode = context.createMediaElementSource(audio);
+
+
         // create a buffer source node
-        sourceNode = context.createBufferSource();
+        //sourceNode = context.createBufferSource();
+
         sourceNode.onended = removeAudioNodes;
         sourceNode.connect(analyser);
         analyser.connect(javascriptNode);
         sourceNode.connect(context.destination);
+        sourceNode.mediaElement.play();
     }
 
     function removeAudioNodes(){
         javascriptNode.disconnect(context.destination);
         analyser.disconnect(javascriptNode);
         sourceNode.disconnect(context.destination);
+        sourceNode.mediaElement.pause();
+        sourceNode.mediaElement.remove();
     }
 
     // load the specified sound
@@ -151,13 +189,8 @@ angular.module('lightsApp')
 
     element.on('$destroy', function() {
         // Do cleanup work
-        sourceNode.stop()
+        removeAudioNodes();
     });
-
-
-    // load the sound
-    setupAudioNodes();
-    loadSound('../01 Main title.mp3');
 
 
       }
