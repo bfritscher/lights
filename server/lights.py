@@ -217,6 +217,9 @@ class BaseAnim(object):
     def stop(self):
         self.isRunning = False
 
+    def client_disconnected(self, client_id):
+        pass
+
     @abc.abstractmethod
     def _anim(self):
         """Do animation until isRunning is False or anim ended"""
@@ -418,6 +421,11 @@ class AudioAnim(BaseAnim):
         show()
         while self.isRunning:
             time.sleep(500/1000.0)
+
+    def client_disconnected(self, client_id):
+        # Since only owner can stream we stop
+        if self.owner_id == client_id:
+            self.stop()
 
     def draw_matrix(self, client_id, kwargs):
         if client_id <> self.owner_id:

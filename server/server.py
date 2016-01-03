@@ -114,6 +114,7 @@ def new_client(client, server):
 # Called for every client disconnecting
 def client_left(client, server):
     print("Client(%d) disconnected" % client['id'])
+    CURRENT_ANIM.client_disconnected(client['id'])
 
 
 def remove_animation(id):
