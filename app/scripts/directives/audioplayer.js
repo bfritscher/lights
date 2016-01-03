@@ -79,7 +79,7 @@ angular.module('lightsApp')
         // setup a analyzer
         analyser = context.createAnalyser();
         analyser.smoothingTimeConstant = 0.3;
-        analyser.fftSize = Math.max(32, com.config.MATRIX_WIDTH * 2);
+        analyser.fftSize = Math.max(32, Math.pow( 2, Math.ceil( Math.log( com.config.MATRIX_WIDTH * 2 ) / Math.log( 2 ) ) ));
 
         // create a buffer source node
         sourceNode = context.createBufferSource();
