@@ -10,7 +10,7 @@
   <div ng-repeat-end class="row rowSpacer" flex ng-style="{height: preview.rowSpace + 'px'}"></div>
 </div>
 
-<h2>{{preview.queue[0].name}} interactions</h2>
+<h2>{{preview.com.config.queue[0].name}} interactions</h2>
 
 <div ng-repeat="param in preview.com.config.ANIMATIONS[preview.com.config.queue[0].name].params">
     <md-button ng-if="param.type == 'button'" ng-click="preview.sendAction(param)">{{param.label}}</md-button>
