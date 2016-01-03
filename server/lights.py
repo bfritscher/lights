@@ -204,9 +204,10 @@ def hex_to_rgb(value):
 
 
 class BaseAnim(object):
-    def __init__(self, kwargs):
+    def __init__(self, client_id, kwargs):
         self.isRunning = False
         self.kwargs = kwargs
+        self.owner_id = client_id
 
     def start(self):
         self.isRunning = True
@@ -379,14 +380,14 @@ class BallAnim(BaseAnim):
             show()
             time.sleep(200/1000.0)
 
-    def launch_random(self, kwargs):
+    def launch_random(self, client_id, kwargs):
         self._balls.append(Ball(random.randint(1, MATRIX_WIDTH - 2),
                                 random.randint(1, MATRIX_HEIGHT - 2),
                                 1, 1, Color(random.randint(10, 255),
                                             random.randint(10, 255),
                                             random.randint(10, 255))))
 
-    def launch_at(self, kwargs):
+    def launch_at(self, client_id, kwargs):
         # TODO check x, y limits
         self._balls.append(Ball(kwargs['x'],
                                 kwargs['y'],
@@ -403,7 +404,7 @@ class DrawboardAnim(BaseAnim):
             show()
             time.sleep(500/1000.0)
 
-    def draw_at(self, kwargs):
+    def draw_at(self, client_id, kwargs):
         # TODO check x, y limits
         hex_color = kwargs.get('color', '#FF0000')
         color = Color(*hex_to_rgb(hex_color))
@@ -418,7 +419,9 @@ class AudioAnim(BaseAnim):
         while self.isRunning:
             time.sleep(500/1000.0)
 
-    def draw_matrix(self, kwargs):
+    def draw_matrix(self, client_id, kwargs):
+        if client_id <> self.owner_id:
+            return
         clear()
         for x in range(0, MATRIX_WIDTH):
             for y in range(0, MATRIX_HEIGHT):

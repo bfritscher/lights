@@ -103,6 +103,7 @@ def new_client(client, server):
     #TO SEND current QUEUE
     server.send_message(client, json.dumps({
       'type': 'config',
+      'client_id': client['id'],
       'queue': ANIM_QUEUE,
       'ANIMATIONS': ANIMATIONS,
       'MATRIX_HEIGHT': lights.MATRIX_HEIGHT,
@@ -122,12 +123,13 @@ def remove_animation(id):
     send_queue()
 
 
-def append_animation(name, params={}, force=False):
+def append_animation(name, params={}, force=False, client_id=None):
     global QUEUE_ID
     animation = {
       'id': QUEUE_ID,
       'name': name,
       'params': params,
+      'client_id': client_id
     }
     QUEUE_ID +=1
     if len(ANIM_QUEUE) == 1 and ANIM_QUEUE[0]['name'] == DEFAULT_ANIM:
@@ -148,13 +150,13 @@ def message_received(client, server, message):
     if msg['type'] == 'anim':
         if ANIMATIONS.has_key(msg['name']):
             force = msg['force'] # can anybody force?
-            append_animation(msg['name'], msg['params'], force)
+            append_animation(msg['name'], msg['params'], force, client['id'])
 
     elif msg['type'] == 'action':
         # TODO check that current animation supports action
         # ANIMATIONS[ANIM_QUEUE[0]['name']]['params']
         if hasattr(CURRENT_ANIM, msg['action']):
-            getattr(CURRENT_ANIM, msg['action'])(msg['params'])
+            getattr(CURRENT_ANIM, msg['action'])(client['id'], msg['params'])
 
     elif msg['type'] == 'next':
         # stop current anim and play next
@@ -198,7 +200,7 @@ def light_thread():
         # get first element of queue and play
         anim_data = ANIM_QUEUE[0]
         class_ = getattr(lights, anim_data['name'])
-        CURRENT_ANIM = class_(anim_data['params'])
+        CURRENT_ANIM = class_(anim_data['client_id'], anim_data['params'])
         CURRENT_ANIM.start()
         # block until stopped
         ANIM_QUEUE.pop(0)
