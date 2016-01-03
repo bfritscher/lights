@@ -46,7 +46,7 @@ ANIMATIONS = {
     'params': [{
       'type': 'text',
       'name': 'text',
-      'label': 'text',
+      'label': 'Text',
       'default': '2016'
     }, {
       'type': 'color',
@@ -145,7 +145,7 @@ def append_animation(name, params={}, force=False, client_id=None):
 
 # Called when a client sends a message
 def message_received(client, server, message):
-    print("Client(%d) said: %s" % (client['id'], message))
+    # print("Client(%d) said: %s" % (client['id'], message))
     msg = json.loads(message)
 
     if msg['type'] == 'anim':
@@ -169,7 +169,6 @@ def message_received(client, server, message):
 
 def send_show_data(data):
     #should be done in thread to not block lights
-    # print data
     try:
         server.send_message_to_all(json.dumps({
           'type': 'data',

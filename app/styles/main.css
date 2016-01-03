@@ -25,3 +25,36 @@
     background-color: #FFF;
     border: solid 1px #ECECEC;
 }
+
+section{
+    margin-bottom: 1em;
+}
+
+h2{
+    margin: 0;
+}
+
+.md-headline{
+    font-weight: bold;
+}
+
+.queue-item {
+    border-top: 1px solid rgba(0,0,0,0.12);
+}
+
+.queue-item.current {
+    font-style: italic;
+}
+
+.color-swatch {
+    border: 1px solid rgba(0,0,0,0.12);
+    width: 18px;
+    height: 16px;
+    display: inline-block;
+}
+
+@media (max-width: 480px) {
+    .sp-palette {
+        max-width: 90px;
+    }
+}

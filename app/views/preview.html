@@ -1,67 +1,115 @@
-<input type="number" ng-model="preview.rowSpace">
-  <input type="number" ng-model="preview.columnSpace">
-<div id="matrix">
-  <div class="row" layout="row"  layout-align="center center" ng-repeat-start="y in preview.range(preview.com.config.MATRIX_HEIGHT)">
-    <div flex></div>
-    <div flex="none" ng-mouseover="preview.sendXYOver(x, y)" ng-click="preview.sendXYClick(x, y)" ng-repeat-start="x in preview.range(preview.com.config.MATRIX_WIDTH)" class="c" ng-style="{'background-color': preview.getPixelColor(x, y)}"></div>
-    <div flex="initial" class="columnSpacer" ng-style="{width: preview.columnSpace + 'px'}" ng-hide="$last" ng-repeat-end></div>
-    <div flex></div>
-  </div>
-  <div ng-repeat-end class="row rowSpacer" flex ng-style="{height: preview.rowSpace + 'px'}"></div>
-</div>
+<md-content>
+    <div class="md-whiteframe-1dp" style="max-width: 960px;margin: 0 auto;">
+        <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>
+            <span>Lights control</span>
+            </h2>
+            <span flex></span>
+            <md-button class="md-icon-button" aria-label="Options" ng-click="preview.showOptions = !preview.showOptions">
+                <md-icon md-svg-icon="images/settings.svg"></md-icon>
+            </md-button>
+        </div>
+        </md-toolbar>
+        <div ng-show="preview.showOptions">
+            <input type="number" ng-model="preview.rowSpace">
+            <input type="number" ng-model="preview.columnSpace">
+        </div>
+        <div id="matrix">
+        <div class="row" layout="row"  layout-align="center center" ng-repeat-start="y in preview.range(preview.com.config.MATRIX_HEIGHT)">
+            <div flex></div>
+            <div flex="none" ng-mouseover="preview.sendXYOver(x, y)" ng-click="preview.sendXYClick(x, y)" ng-repeat-start="x in preview.range(preview.com.config.MATRIX_WIDTH)" class="c" ng-style="{'background-color': preview.getPixelColor(x, y)}"></div>
+            <div flex="initial" class="columnSpacer" ng-style="{width: preview.columnSpace + 'px'}" ng-hide="$last" ng-repeat-end></div>
+            <div flex></div>
+        </div>
+        <div ng-repeat-end class="row rowSpacer" flex ng-style="{height: preview.rowSpace + 'px'}"></div>
+        </div>
 
-<h2>{{preview.com.config.queue[0].name}} interactions</h2>
+        <md-card>
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">{{preview.com.config.queue[0].name}} interactions</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <div ng-repeat="param in preview.com.config.ANIMATIONS[preview.com.config.queue[0].name].params">
+                    <md-button ng-if="param.type == 'button'" ng-click="preview.sendAction(param)">{{param.label}}</md-button>
+                    <div ng-if="param.type.indexOf('xy') == 0">{{param.label}}</div>
+                    <div ng-repeat="pp in param.params">
+                        <md-input-container ng-if="pp.type == 'text' || pp.type == 'number'">
+                            <label>{{pp.label}}</label>
+                            <input ng-model="pp.default" type="{{pp.type}}">
+                        </md-input-container>
+                        <md-input-container ng-if="pp.type == 'color'">
+                            <span>{{pp.label}}</span>
+                            <spectrum-colorpicker
+                                ng-model="pp.default"
+                                options="preview.colorPickerOptions"
+                            ></spectrum-colorpicker>
+                        </md-input-container>
+                    </div>
+                    <audio-player ng-if="param.type == 'audio' && preview.com.config.client_id == preview.com.config.queue[0].client_id"></audio-player>
+                    <p ng-if="param.type == 'audio' && preview.com.config.client_id != preview.com.config.queue[0].client_id">
+                        To display your music add your own audio animation to the queue.
+                    </p>
+                </div>
+                <p ng-if="preview.com.config.ANIMATIONS[preview.com.config.queue[0].name].params.length==0">No interactions. Enjoy the show!</p>
+            </md-card-content>
+        </md-card>
 
-<div ng-repeat="param in preview.com.config.ANIMATIONS[preview.com.config.queue[0].name].params">
-    <md-button ng-if="param.type == 'button'" ng-click="preview.sendAction(param)">{{param.label}}</md-button>
-    <div ng-if="param.type.indexOf('xy') == 0">{{param.label}}</div>
-    <div ng-repeat="pp in param.params">
-        <md-input-container ng-if="pp.type == 'text' || pp.type == 'number'">
-            <label>{{pp.label}}</label>
-            <input ng-model="pp.default" type="{{pp.type}}">
-        </md-input-container>
-        <md-input-container ng-if="pp.type == 'color'">
-            <span>{{pp.label}}</span>
-            <spectrum-colorpicker
-                ng-model="pp.default"
-                options="preview.colorPickerOptions"
-            ></spectrum-colorpicker>
-        </md-input-container>
+
+
+        <md-card>
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">Add new animation</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <md-input-container class="md-block" >
+                    <label>Animation</label>
+                    <md-select ng-model="preview.selectedAnimationKey">
+                        <md-option ng-value="key" ng-repeat="key in preview.keys(preview.com.config.ANIMATIONS)">{{preview.com.config.ANIMATIONS[key].description}} ({{key}})</md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container class="md-block"  ng-repeat="param in preview.com.config.ANIMATIONS[preview.selectedAnimationKey].params">
+
+                        <label ng-if="param.type == 'text' || param.type == 'number'">{{param.label}}</label>
+                        <input ng-if="param.type == 'text' || param.type == 'number'" ng-model="param.default" type="{{param.type}}">
+
+                        <p ng-if="param.type == 'color'">{{param.label}}</p>
+                        <spectrum-colorpicker  ng-if="param.type == 'color'"
+                            ng-model="param.default"
+                            options="preview.colorPickerOptions"
+                        ></spectrum-colorpicker>
+                </md-input-container>
+            </md-card-content>
+            <md-card-actions layout="row" layout-align="end center">
+                <md-button ng-click="preview.addAnimation(true)">Force Start</md-button>
+                <md-button ng-click="preview.addAnimation(false)" class="md-primary">Queue</md-button>
+            </md-card-actions>
+        </md-card>
+
+        <md-card>
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">Queue</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-actions layout="row" layout-align="start center">
+                <md-button ng-click="preview.nextAnimation()" class="md-primary">Play next animation</md-button>
+            </md-card-actions>
+            <md-card-content>
+                <md-list>
+                    <md-list-item ng-repeat="q in preview.com.config.queue" class="queue-item" ng-class="{'current': $first}">
+                        <p> {{ q.name }} <span ng-repeat="(k, v) in q.params"><b>{{k}}:</b> <span ng-if="k != 'color'">{{v}}</span> <span ng-if="k == 'color'" class="color-swatch" ng-style="{'background-color': v}"></span> </span> </p>
+                        <md-button ng-if="$index > 0" ng-click="preview.removeAnimation(q.id)" class="md-warn">Remove</md-button>
+                    </md-list-item>
+                </md-list>
+
+            </md-card-content>
+        </md-card>
+        <br/>
     </div>
-    <audio-player ng-if="param.type == 'audio' && preview.com.config.client_id == preview.com.config.queue[0].client_id"></audio-player>
-    <p ng-if="param.type == 'audio' && preview.com.config.client_id != preview.com.config.queue[0].client_id">
-        To display your music add your own audio animation to the queue.
-    </p>
-</div>
-
-
-
-<h2>Add new animation</h2>
-<md-input-container>
-  <label>Animation</label>
-  <md-select ng-model="preview.selectedAnimationKey">
-    <md-option ng-value="key" ng-repeat="key in preview.keys(preview.com.config.ANIMATIONS)">{{preview.com.config.ANIMATIONS[key].description}} ({{key}})</md-option>
-  </md-select>
-</md-input-container>
-
-<div ng-repeat="param in preview.com.config.ANIMATIONS[preview.selectedAnimationKey].params">
-    <md-input-container ng-if="param.type == 'text' || param.type == 'number'">
-        <label>{{param.label}}</label>
-        <input ng-model="param.default" type="{{param.type}}">
-    </md-input-container>
-    <md-input-container ng-if="param.type == 'color'">
-        <span>{{param.label}}</span>
-        <spectrum-colorpicker
-            ng-model="param.default"
-            options="preview.colorPickerOptions"
-        ></spectrum-colorpicker>
-    </md-input-container>
-
-</div>
-
-<md-button ng-click="preview.addAnimation(true)">Force Start</md-button>
-<md-button ng-click="preview.addAnimation(false)">Queue</md-button>
-
-<h2>Queue</h2>
-<md-button ng-click="preview.nextAnimation()">Next</md-button>
-<div ng-repeat="q in preview.com.config.queue">{{q.name}} <span ng-repeat="(k, v) in q.params">{{k}}: {{v}} </span> <md-button ng-if="$index > 0" ng-click="preview.removeAnimation(q.id)">Remove</md-button></div>
+</md-content>

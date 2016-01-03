@@ -369,7 +369,7 @@ class BallAnim(BaseAnim):
 
     def _anim(self):
         clear()
-        rect(0, 0, MATRIX_WIDTH, MATRIX_WIDTH, Color(0, 0, 0), 1, Color(255, 0, 0))
+        rect(0, 0, MATRIX_WIDTH, MATRIX_HEIGHT, Color(0, 0, 0), 1, Color(255, 0, 0))
 
         self._balls = [
             Ball(7, 10 , 1, 1, Color(0, 255, 0)),
