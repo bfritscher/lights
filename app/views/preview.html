@@ -1,9 +1,9 @@
 <input type="number" ng-model="preview.rowSpace">
   <input type="number" ng-model="preview.columnSpace">
 <div id="matrix">
-  <div class="row" layout="row"  layout-align="center center" ng-repeat-start="y in preview.range(preview.MATRIX_HEIGHT)">
+  <div class="row" layout="row"  layout-align="center center" ng-repeat-start="y in preview.range(preview.com.config.MATRIX_HEIGHT)">
     <div flex></div>
-    <div flex="none" ng-mouseover="preview.sendXYOver(x, y)" ng-click="preview.sendXYClick(x, y)" ng-repeat-start="x in preview.range(preview.MATRIX_WIDTH)" class="c" ng-style="{'background-color': preview.getPixelColor(x, y)}"></div>
+    <div flex="none" ng-mouseover="preview.sendXYOver(x, y)" ng-click="preview.sendXYClick(x, y)" ng-repeat-start="x in preview.range(preview.com.config.MATRIX_WIDTH)" class="c" ng-style="{'background-color': preview.getPixelColor(x, y)}"></div>
     <div flex="initial" class="columnSpacer" ng-style="{width: preview.columnSpace + 'px'}" ng-hide="$last" ng-repeat-end></div>
     <div flex></div>
   </div>
@@ -12,7 +12,7 @@
 
 <h2>{{preview.queue[0].name}} interactions</h2>
 
-<div ng-repeat="param in preview.ANIMATIONS[preview.queue[0].name].params">
+<div ng-repeat="param in preview.com.config.ANIMATIONS[preview.com.config.queue[0].name].params">
     <md-button ng-if="param.type == 'button'" ng-click="preview.sendAction(param)">{{param.label}}</md-button>
     <div ng-if="param.type.indexOf('xy') == 0">{{param.label}}</div>
     <div ng-repeat="pp in param.params">
@@ -28,6 +28,7 @@
             ></spectrum-colorpicker>
         </md-input-container>
     </div>
+    <audio-player ng-if="param.type == 'audio'"></audio-player>
 </div>
 
 <h2>Add new animation</h2>
@@ -35,11 +36,11 @@
 <md-input-container>
   <label>Animation</label>
   <md-select ng-model="preview.selectedAnimationKey">
-    <md-option ng-value="key" ng-repeat="key in preview.keys(preview.ANIMATIONS)">{{preview.ANIMATIONS[key].description}} ({{key}})</md-option>
+    <md-option ng-value="key" ng-repeat="key in preview.keys(preview.com.config.ANIMATIONS)">{{preview.com.config.ANIMATIONS[key].description}} ({{key}})</md-option>
   </md-select>
 </md-input-container>
 
-<div ng-repeat="param in preview.ANIMATIONS[preview.selectedAnimationKey].params">
+<div ng-repeat="param in preview.com.config.ANIMATIONS[preview.selectedAnimationKey].params">
     <md-input-container ng-if="param.type == 'text' || param.type == 'number'">
         <label>{{param.label}}</label>
         <input ng-model="param.default" type="{{param.type}}">
@@ -59,4 +60,4 @@
 
 <h2>Queue</h2>
 <md-button ng-click="preview.nextAnimation()">Next</md-button>
-<div ng-repeat="q in preview.queue">{{q.name}} <span ng-repeat="(k, v) in q.params">{{k}}: {{v}} </span> <md-button ng-if="$index > 0" ng-click="preview.removeAnimation(q.id)">Remove</md-button></div>
+<div ng-repeat="q in preview.com.config.queue">{{q.name}} <span ng-repeat="(k, v) in q.params">{{k}}: {{v}} </span> <md-button ng-if="$index > 0" ng-click="preview.removeAnimation(q.id)">Remove</md-button></div>

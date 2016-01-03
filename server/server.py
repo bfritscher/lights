@@ -13,7 +13,7 @@ ANIMATIONS = {
   'AudioAnim': {
     'description': 'Audio visualizer',
     'params': [
-
+      {'type': 'audio'}
     ]
   },
   'SensorAnim': {
