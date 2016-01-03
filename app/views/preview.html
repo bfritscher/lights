@@ -42,3 +42,5 @@
 <h2>Queue</h2>
 <md-button ng-click="preview.nextAnimation()">Next</md-button>
 <div ng-repeat="q in preview.queue">{{q.name}} <span ng-repeat="(k, v) in q.params">{{k}}: {{v}} </span> <md-button ng-if="$index > 0" ng-click="preview.removeAnimation(q.id)">Remove</md-button></div>
+
+<canvas id="canvas" width="1000" height="200" style="display: block;"></canvas>

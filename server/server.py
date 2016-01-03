@@ -10,6 +10,12 @@ PORT = 9001
 DEFAULT_ANIM = 'TimeAnim'
 
 ANIMATIONS = {
+  'AudioAnim': {
+    'description': 'Audio visualizer',
+    'params': [
+
+    ]
+  },
   'SensorAnim': {
     'description': 'Sensor display',
     'params': []
@@ -147,7 +153,8 @@ def message_received(client, server, message):
     elif msg['type'] == 'action':
         # TODO check that current animation supports action
         # ANIMATIONS[ANIM_QUEUE[0]['name']]['params']
-        getattr(CURRENT_ANIM, msg['action'])(msg['params'])
+        if hasattr(CURRENT_ANIM, msg['action']):
+            getattr(CURRENT_ANIM, msg['action'])(msg['params'])
 
     elif msg['type'] == 'next':
         # stop current anim and play next

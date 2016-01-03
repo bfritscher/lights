@@ -409,6 +409,22 @@ class DrawboardAnim(BaseAnim):
         color = Color(*hex_to_rgb(hex_color))
         drawPixel(kwargs['x'], kwargs['y'], color)
 
+
+
+class AudioAnim(BaseAnim):
+    def _anim(self):
+        clear()
+        show()
+        while self.isRunning:
+            time.sleep(500/1000.0)
+
+    def draw_matrix(self, kwargs):
+        clear()
+        for x in range(0, MATRIX_WIDTH):
+            for y in range(0, MATRIX_HEIGHT):
+                drawPixel(x, y, Color(*hex_to_rgb(kwargs['data'][x][y])))
+        show()
+
 # https://github.com/bbx10/artnet-unicorn-hat/blob/master/artnet-server.py
 from twisted.internet.protocol import DatagramProtocol
 from twisted.internet import reactor
