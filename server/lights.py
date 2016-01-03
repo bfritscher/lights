@@ -94,6 +94,9 @@ def setPixelColor(i, color):
     # TODO handle error reporting to detect wrong Anim
 
 
+def setPixelColorRGB(i, r, g, b):
+    setPixelColor(i, Color(r, g, b))
+
 def register_listener(listener):
     listeners.append(listener)
 

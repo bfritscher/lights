@@ -199,6 +199,7 @@ def light_thread():
             append_animation(DEFAULT_ANIM)
         # get first element of queue and play
         anim_data = ANIM_QUEUE[0]
+        # TODO handle anim error
         class_ = getattr(lights, anim_data['name'])
         CURRENT_ANIM = class_(anim_data['client_id'], anim_data['params'])
         CURRENT_ANIM.start()
