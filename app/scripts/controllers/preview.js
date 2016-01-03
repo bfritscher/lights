@@ -240,11 +240,6 @@ function makeGradientColor(color1, color2, percent) {
     var analyser;
     var javascriptNode;
 
-    // get the context from the canvas to draw on
-    var ctx = document.getElementById('canvas').getContext("2d");
-
-
-
     // load the sound
     setupAudioNodes();
     loadSound('../01 Main title.mp3');
@@ -309,11 +304,6 @@ function makeGradientColor(color1, color2, percent) {
         var array =  new Uint8Array(analyser.frequencyBinCount);
         analyser.getByteFrequencyData(array);
 
-        // clear the current state
-        ctx.clearRect(0, 0, 1000, 200);
-
-        // set the fill style
-        //ctx.fillStyle=gradient;
         drawSpectrum(array);
 
     }
@@ -333,8 +323,6 @@ function makeGradientColor(color1, color2, percent) {
                     //TODO move color to cache
                     color = makeGradientColor({r:255,g:0,b:0}, {r:255,g:255,b:0}, y/20)
                 }
-                ctx.fillStyle=color;
-                ctx.fillRect(x * 20, 200 - (y * 10), 16, 8);
                 col[preview.MATRIX_HEIGHT-1 - y] = color;
             }
         }
