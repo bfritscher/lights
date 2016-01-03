@@ -20,7 +20,7 @@ angular.module('lightsApp')
 
      function connect(){
         // Connect to Web Socket
-        ws = new WebSocket("ws://localhost:9001/");
+        ws = new WebSocket("ws://192.168.101.3:9001/");
 
         ws.onmessage = function(e) {
             $timeout(function(){
