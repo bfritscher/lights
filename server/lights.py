@@ -77,12 +77,21 @@ ALPHA_NUM[';'] = ALPHA_NUM[':']
 ALPHA_NUM[','] = ALPHA_NUM['.']
 listeners = []
 
+LOCAL_LED_CACHE = [0] * LED_COUNT
 
 def show():
     strip.show()
     # notify listeners
     for l in listeners:
-        l(strip.getPixels())
+        l(LOCAL_LED_CACHE)
+
+
+def setPixelColor(i, color):
+    if i > -1 and i < LED_COUNT:
+      LOCAL_LED_CACHE[i] = color
+      strip.setPixelColor(i, color)
+
+    # TODO handle error reporting to detect wrong Anim
 
 
 def register_listener(listener):
@@ -104,8 +113,8 @@ def clear():
 
 
 def colorAll(color):
-    for i in range(strip.numPixels()):
-        strip.setPixelColor(i, color)
+    for i in range(LED_COUNT):
+        setPixelColor(i, color)
 
 
 def rect(x, y, w, h, fill_color=None, border_size=0, border_color=None):
@@ -134,14 +143,14 @@ def drawObj(x, y, obj, color):
                 drawPixel((i + x), (j + y), color if obj[j][i] == 1 else Color(0,0,0))
 
 def drawPixel(x, y, color):
-    strip.setPixelColor(x * MATRIX_HEIGHT + (y if x % 2 != 0 else MATRIX_HEIGHT - y - 1), color)
+    setPixelColor(x * MATRIX_HEIGHT + (y if x % 2 != 0 else MATRIX_HEIGHT - y - 1), color)
 
 
 # Define functions which animate LEDs in various ways.
 def colorWipe(color, wait_ms=50):
         """Wipe color across display a pixel at a time."""
-        for i in range(strip.numPixels()):
-                strip.setPixelColor(i, color)
+        for i in range(LED_COUNT):
+                setPixelColor(i, color)
                 show()
                 time.sleep(wait_ms/1000.0)
 
@@ -149,12 +158,12 @@ def theaterChase(color, wait_ms=50, iterations=10):
         """Movie theater light style chaser animation."""
         for j in range(iterations):
                 for q in range(3):
-                        for i in range(0, strip.numPixels(), 3):
-                                strip.setPixelColor(i+q, color)
+                        for i in range(0, LED_COUNT, 3):
+                                setPixelColor(i+q, color)
                         show()
                         time.sleep(wait_ms/1000.0)
-                        for i in range(0, strip.numPixels(), 3):
-                                strip.setPixelColor(i+q, 0)
+                        for i in range(0, LED_COUNT, 3):
+                                setPixelColor(i+q, 0)
 
 def wheel(pos):
         """Generate rainbow colors across 0-255 positions."""
@@ -170,8 +179,8 @@ def wheel(pos):
 def rainbow(wait_ms=20, iterations=1):
         """Draw rainbow that fades across all pixels at once."""
         for j in range(256*iterations):
-                for i in range(strip.numPixels()):
-                        strip.setPixelColor(i, wheel((i+j) & 255))
+                for i in range(LED_COUNT):
+                        setPixelColor(i, wheel((i+j) & 255))
                 show()
                 time.sleep(wait_ms/1000.0)
 
@@ -179,8 +188,8 @@ def rainbow(wait_ms=20, iterations=1):
 def rainbowCycle(wait_ms=20, iterations=5):
         """Draw rainbow that uniformly distributes itself across all pixels."""
         for j in range(256*iterations):
-                for i in range(strip.numPixels()):
-                        strip.setPixelColor(i, wheel(((i * 256 / strip.numPixels()) + j) & 255))
+                for i in range(LED_COUNT):
+                        setPixelColor(i, wheel(((i * 256 / LED_COUNT) + j) & 255))
                 show()
                 time.sleep(wait_ms/1000.0)
 
@@ -188,12 +197,12 @@ def theaterChaseRainbow(wait_ms=50):
         """Rainbow movie theater light style chaser animation."""
         for j in range(256):
                 for q in range(3):
-                        for i in range(0, strip.numPixels(), 3):
-                                strip.setPixelColor(i+q, wheel((i+j) % 255))
+                        for i in range(0, LED_COUNT, 3):
+                                setPixelColor(i+q, wheel((i+j) % 255))
                         show()
                         time.sleep(wait_ms/1000.0)
-                        for i in range(0, strip.numPixels(), 3):
-                                strip.setPixelColor(i+q, 0)
+                        for i in range(0, LED_COUNT, 3):
+                                setPixelColor(i+q, 0)
 
 
 def hex_to_rgb(value):
@@ -466,7 +475,7 @@ class ArtNet(DatagramProtocol):
                     idx += 1
                     b = rawbytes[idx]
                     idx += 1
-                    strip.setPixelColorRGB(x, r, g, b)
+                    setPixelColorRGB(x, r, g, b)
                     x += 1
                 show()
 
