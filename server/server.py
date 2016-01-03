@@ -146,25 +146,28 @@ def append_animation(name, params={}, force=False, client_id=None):
 # Called when a client sends a message
 def message_received(client, server, message):
     # print("Client(%d) said: %s" % (client['id'], message))
-    msg = json.loads(message)
+    try:
+        msg = json.loads(message)
 
-    if msg['type'] == 'anim':
-        if ANIMATIONS.has_key(msg['name']):
-            force = msg['force'] # can anybody force?
-            append_animation(msg['name'], msg['params'], force, client['id'])
+        if msg['type'] == 'anim':
+            if ANIMATIONS.has_key(msg['name']):
+                force = msg['force'] # can anybody force?
+                append_animation(msg['name'], msg['params'], force, client['id'])
 
-    elif msg['type'] == 'action':
-        # TODO check that current animation supports action
-        # ANIMATIONS[ANIM_QUEUE[0]['name']]['params']
-        if hasattr(CURRENT_ANIM, msg['action']):
-            getattr(CURRENT_ANIM, msg['action'])(client['id'], msg['params'])
+        elif msg['type'] == 'action':
+            # TODO check that current animation supports action
+            # ANIMATIONS[ANIM_QUEUE[0]['name']]['params']
+            if hasattr(CURRENT_ANIM, msg['action']):
+                getattr(CURRENT_ANIM, msg['action'])(client['id'], msg['params'])
 
-    elif msg['type'] == 'next':
-        # stop current anim and play next
-        CURRENT_ANIM.stop()
-    elif msg['type'] == 'remove':
-        # remove anim with id
-        remove_animation(msg['id'])
+        elif msg['type'] == 'next':
+            # stop current anim and play next
+            CURRENT_ANIM.stop()
+        elif msg['type'] == 'remove':
+            # remove anim with id
+            remove_animation(msg['id'])
+    except:
+        print 'msg receive error' #TODO
 
 
 def send_show_data(data):
