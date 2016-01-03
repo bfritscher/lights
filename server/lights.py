@@ -332,7 +332,7 @@ class SensorAnim(BaseAnim):
             data = None
             if time.time() - lastUpdate > 900:
                 data = get_sensorist_data()
-            a = ScrollTextAnim({'text': u'T: %s°C  H: %s%%' % data})
+            a = ScrollTextAnim(self.owner_id, {'text': u'T: %s°C  H: %s%%' % data})
             a.start()
 
 
