@@ -288,6 +288,50 @@ class TestAnim(BaseAnim):
             theaterChaseRainbow()
 
 
+class BallUpDown:
+    def __init__(self, n, v, color):
+          self.n = n
+          self.color = color
+          self.v = v
+          self.loop = 0
+
+    def hide(self):
+        setPixelColor(self.n, Color(0, 0, 0))
+
+    def move(self):
+        if(self.n < 0 and self.v < 0):
+            self.v = 1
+            self.loop +=1
+        if(self.n > LED_COUNT and self.v > 0):
+            self.v = -1
+
+        self.n = self.n + self.v
+        setPixelColor(self.n, self.color)
+
+
+class UpDownAnim(BaseAnim):
+
+    def _anim(self):
+        clear()
+        self._balls = [
+              ]
+        i = 0
+        while self.isRunning:
+            if i == 4:
+                 self._balls.append(BallUpDown(0, 1,  Color(random.randint(10, 255),
+                                            random.randint(10, 255),
+                                            random.randint(10, 255))))
+                 i = 0
+            [self._balls.remove(b) for b in self._balls if b.loop == 1]
+            [b.hide() for b in self._balls]
+            [b.move() for b in self._balls]
+            show()
+            time.sleep(50/1000.0)
+            i += 1
+
+
+
+
 class ScrollTextAnim(BaseAnim):
 
     def _anim(self):

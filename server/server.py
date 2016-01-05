@@ -20,6 +20,10 @@ ANIMATIONS = {
     'description': 'Sensor display',
     'params': []
   },
+  'UpDownAnim': {
+    'description': 'UpDown ',
+    'params': []
+  },
   'TimeAnim': {
     'description': 'Digital clock',
     'params': []
