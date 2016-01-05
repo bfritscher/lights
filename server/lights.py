@@ -145,9 +145,15 @@ def drawObj(x, y, obj, color):
             if (i + x) >= 0 and (j + y) >=0:
                 drawPixel((i + x), (j + y), color if obj[j][i] == 1 else Color(0,0,0))
 
-def drawPixel(x, y, color):
-    setPixelColor(x * MATRIX_HEIGHT + (y if x % 2 != 0 else MATRIX_HEIGHT - y - 1), color)
+def xyToPosition(x, y):
+    return x * MATRIX_HEIGHT + (y if x % 2 != 0 else MATRIX_HEIGHT - y - 1)
 
+def drawPixel(x, y, color):
+    setPixelColor(xyToPosition(x, y), color)
+
+
+def getPixel(x, y):
+    return LOCAL_LED_CACHE[xyToPosition(x, y)]
 
 # Define functions which animate LEDs in various ways.
 def colorWipe(color, wait_ms=50):
@@ -286,6 +292,67 @@ class TestAnim(BaseAnim):
             rainbow()
             rainbowCycle()
             theaterChaseRainbow()
+
+
+class WaterDrop:
+    def __init__(self, x, y, color):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.stopped = False
+
+    def move(self):
+        if self.stopped:
+            return
+        ## need refactoring
+        #hide
+        drawPixel(self.x, self.y, Color(0, 0, 0))
+        if getPixel(self.x, self.y + 1) == Color(0, 0, 0):
+            self.y += 1
+            if self.y == MATRIX_HEIGHT - 1:
+                self.stopped = True
+        else:
+            #find empty pixel
+            range_left = 1
+            range_right = 1
+            while not self.stopped:
+                if self.x - range_left < 0 and self.x + range_right >= MATRIX_WIDTH:
+                    self.stopped = True
+                else:
+                    if self.x - range_left >= 0:
+                        if getPixel(self.x - range_left, self.y + 1) == Color(0, 0, 0):
+                            self.y += 1
+                            self.x -= range_left
+                            self.stopped = True
+                        else:
+                            range_left += 1
+
+                    if self.x + range_right < MATRIX_WIDTH:
+                        if getPixel(self.x + range_right, self.y + 1) == Color(0, 0, 0):
+                            self.y += 1
+                            self.x += range_right
+                            self.stopped = True
+                        else:
+                            range_right += 1
+        drawPixel(self.x, self.y, self.color)
+
+
+class WaterAnim(BaseAnim):
+
+    def _anim(self):
+        clear()
+        self._drops = []
+        i = 0
+        while self.isRunning:
+            if i == 4:
+                self._drops.append(WaterDrop(10, 0, Color(0, 255, 0)))
+                self._drops.append(WaterDrop(3, 0, Color(0, 0, 255)))
+                i = 0
+
+            [b.move() for b in self._drops]
+            show()
+            time.sleep(20/1000.0)
+            i += 1
 
 
 class BallUpDown:

@@ -21,7 +21,11 @@ ANIMATIONS = {
     'params': []
   },
   'UpDownAnim': {
-    'description': 'UpDown ',
+    'description': 'UpDown',
+    'params': []
+  },
+  'WaterAnim': {
+    'description': 'Water',
     'params': []
   },
   'TimeAnim': {
