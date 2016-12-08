@@ -53,6 +53,12 @@ h2{
     display: inline-block;
 }
 
+svg .strip {
+    fill: none;
+    stroke: #000;
+    stroke-width: 1;
+}
+
 @media (max-width: 480px) {
     .sp-palette {
         max-width: 90px;

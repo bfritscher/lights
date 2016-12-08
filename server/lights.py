@@ -550,7 +550,7 @@ class AudioAnim(BaseAnim):
             self.stop()
 
     def draw_matrix(self, client_id, kwargs):
-        if client_id <> self.owner_id:
+        if client_id != self.owner_id:
             return
         clear()
         for x in range(0, MATRIX_WIDTH):
@@ -567,7 +567,7 @@ class ArtNet(DatagramProtocol):
     def __init__(self):
         self.render = False
 
-    def datagramReceived(self, data, (host, port)):
+    def datagramReceived(self, data, host, port):
         if self.render and ((len(data) > 18) and (data[0:8] == "Art-Net\x00")):
             rawbytes = map(ord, data)
             opcode = rawbytes[8] + (rawbytes[9] << 8)

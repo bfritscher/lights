@@ -12,7 +12,6 @@ angular
   .module('lightsApp', [
     'ngAnimate',
     'ngRoute',
-    'ngTouch',
     'ngMaterial',
     'angularSpectrumColorpicker'
   ])
@@ -23,10 +22,10 @@ angular
         controller: 'MainCtrl',
         controllerAs: 'main'
       })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl',
-        controllerAs: 'about'
+      .when('/snowflake', {
+        templateUrl: 'views/snowflake.html',
+        controller: 'SnowflakeCtrl',
+        controllerAs: '$ctrl'
       })
       .when('/preview', {
         templateUrl: 'views/preview.html',

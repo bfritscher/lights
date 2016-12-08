@@ -8,7 +8,7 @@
  * Service in the lightsApp.
  */
 angular.module('lightsApp')
-  .service('com', function ($timeout) {
+  .service('com', function ($timeout, $rootScope) {
      var com = this;
 
      this.config = {
@@ -20,7 +20,8 @@ angular.module('lightsApp')
 
      function connect(){
         // Connect to Web Socket
-        ws = new WebSocket("ws://192.168.101.3:9001/");
+        //ws = new WebSocket("ws://ne.fritscher.ch:9001/");
+        ws = new WebSocket("ws://192.168.101.154:9001/");
 
         ws.onmessage = function(e) {
             $timeout(function(){
@@ -34,6 +35,7 @@ angular.module('lightsApp')
                 }
                 if ( msg.type === 'data') {
                     com.config.matrixData = msg.data;
+                    $rootScope.$broadcast('ledata', msg.data);
                 }
                 if ( msg.type === 'queue') {
                     com.config.queue = msg.data;
