@@ -166,6 +166,13 @@ angular.module('lightsApp')
         }
       };
 
+      this.liveParam = function (param){
+          debugger;
+          if (param.live) {
+              this.sendAction(param);
+          }
+      };
+
       this.range = function(r){
           return Array.apply(null, new Array(r)).map(function (_, i) {return i;});
       };

@@ -4,6 +4,7 @@ import threading
 import json
 import time
 import lights
+import traceback
 
 PORT = 9001
 
@@ -97,6 +98,21 @@ ANIMATIONS = {
         'default': '#FF0000'
       }]
     }]
+  },
+  'ColorTestAnim': {
+    'description': 'Color Tester',
+    'params': [{
+      'type': 'button',
+      'live': True,
+      'action': 'draw',
+      'label': 'Change color',
+      'params': [{
+        'type': 'color',
+        'name': 'color',
+        'label': 'Color',
+        'default': '#FFFFFF'
+      }]
+    }]
   }
 }
 
@@ -175,7 +191,8 @@ def message_received(client, server, message):
             # remove anim with id
             remove_animation(msg['id'])
     except:
-        print 'msg receive error' #TODO
+        print 'msg receive error'  #TODO
+        traceback.print_exc()
 
 
 def send_show_data(data):

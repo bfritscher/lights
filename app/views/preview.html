@@ -45,7 +45,9 @@
                             <spectrum-colorpicker
                                 ng-model="pp.default"
                                 options="preview.colorPickerOptions"
+                                on-change="preview.liveParam(param)"
                             ></spectrum-colorpicker>
+                            {{pp.default}}
                         </md-input-container>
                     </div>
                     <audio-player ng-if="param.type == 'audio' && preview.com.config.client_id == preview.com.config.queue[0].client_id"></audio-player>

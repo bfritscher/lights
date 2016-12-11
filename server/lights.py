@@ -338,7 +338,6 @@ class WaterDrop:
 
 
 class WaterAnim(BaseAnim):
-
     def _anim(self):
         clear()
         self._drops = []
@@ -377,7 +376,6 @@ class BallUpDown:
 
 
 class UpDownAnim(BaseAnim):
-
     def _anim(self):
         clear()
         self._balls = [
@@ -395,8 +393,6 @@ class UpDownAnim(BaseAnim):
             show()
             time.sleep(50/1000.0)
             i += 1
-
-
 
 
 class ScrollTextAnim(BaseAnim):
@@ -520,9 +516,7 @@ class BallAnim(BaseAnim):
                                             random.randint(10, 255),
                                             random.randint(10, 255))))
 
-
 class DrawboardAnim(BaseAnim):
-
     def _anim(self):
         clear()
         while self.isRunning:
@@ -535,6 +529,18 @@ class DrawboardAnim(BaseAnim):
         color = Color(*hex_to_rgb(hex_color))
         drawPixel(kwargs['x'], kwargs['y'], color)
 
+
+class ColorTestAnim(BaseAnim):
+    def _anim(self):
+        clear()
+        while self.isRunning:
+            show()
+            time.sleep(500/1000.0)
+
+    def draw(self, client_id, kwargs):
+        hex_color = kwargs.get('color', '#FFFFFF')
+        color = Color(*hex_to_rgb(hex_color))
+        colorAll( color)
 
 
 class AudioAnim(BaseAnim):
