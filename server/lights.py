@@ -5,6 +5,7 @@ import abc
 from neopixel import *
 
 # LED strip configuration:
+
 LED_PIN = 18      # GPIO pin connected to the pixels (must support PWM!).
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 5       # DMA channel to use for generating signal (try 5)
@@ -541,6 +542,14 @@ class ColorTestAnim(BaseAnim):
         hex_color = kwargs.get('color', '#FFFFFF')
         color = Color(*hex_to_rgb(hex_color))
         colorAll( color)
+
+class SnowflakeAnim(BaseAnim):
+    def _anim(self):
+        clear()
+        from snowflake import Snowflake
+        sf = Snowflake(0)
+        sf.test()
+
 
 
 class AudioAnim(BaseAnim):

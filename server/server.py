@@ -29,6 +29,10 @@ ANIMATIONS = {
     'description': 'Water',
     'params': []
   },
+  'SnowflakeAnim': {
+    'description': 'Snowflake',
+    'params': []
+  },
   'TimeAnim': {
     'description': 'Digital clock',
     'params': []
