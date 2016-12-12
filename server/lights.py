@@ -536,7 +536,7 @@ class ColorTestAnim(BaseAnim):
     g = 255
     b = 255
     fade = True
-    fadeLevel = 0
+    fadeLevel = 1
     fadeIn = True
     speed = 30
     step = 10
@@ -546,14 +546,14 @@ class ColorTestAnim(BaseAnim):
             color = Color(self.r, self.g, self.b)
             if self.fade:
                 if self.fadeIn:
-                    self.fadeLevel += self.step
+                    self.fadeLevel = self.fadeLevel * max(1.1, self.step / 10)
                     if self.fadeLevel > 255:
-                        self.fadeLevel = 255
+                        self.fadeLevel = 256
                         self.fadeIn = False
                 else:
-                    self.fadeLevel -= self.step
-                    if self.fadeLevel < 0:
-                        self.fadeLevel = 0
+                    self.fadeLevel = self.fadeLevel / max(1.1, self.step / 10)
+                    if self.fadeLevel < 1:
+                        self.fadeLevel = 1
                         self.fadeIn = True
                 ratio = self.fadeLevel / 256.0
                 color = Color(int(self.r * ratio), int(self.g * ratio), int(self.b * ratio))
