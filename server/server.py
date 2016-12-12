@@ -100,7 +100,7 @@ ANIMATIONS = {
         'name': 'color',
         'label': 'Color',
         'default': '#FF0000'
-      }]
+        }]
     }]
   },
   'ColorTestAnim': {
@@ -115,6 +115,17 @@ ANIMATIONS = {
         'name': 'color',
         'label': 'Color',
         'default': '#FFFFFF'
+      },{
+        'type': 'number',
+        'name': 'speed',
+        'label': 'speed',
+        'default': 30
+      },
+      {
+        'type': 'number',
+        'name': 'fade',
+        'label': 'Fade',
+        'default': 1
       }]
     }]
   }

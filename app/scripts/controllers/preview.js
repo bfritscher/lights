@@ -167,7 +167,6 @@ angular.module('lightsApp')
       };
 
       this.liveParam = function (param){
-          debugger;
           if (param.live) {
               this.sendAction(param);
           }

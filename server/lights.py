@@ -532,16 +532,38 @@ class DrawboardAnim(BaseAnim):
 
 
 class ColorTestAnim(BaseAnim):
+    r = 255
+    g = 255
+    b = 255
+    fade = True
+    fadeLevel = 0
+    fadeIn = True
+    speed = 30
     def _anim(self):
         clear()
         while self.isRunning:
+            color = Color(self.r, self.g, self.b)
+            if self.fade:
+                if self.fadeIn:
+                    self.fadeLevel += 1
+                    if self.fadeLevel > 255:
+                        self.fadeIn = False
+                else:
+                    self.fadeLevel -= 1
+                    if self.fadeLevel < 0:
+                        self.fadeIn = True
+                ratio = self.fadeLevel / 256.0
+                color = Color(int(self.r * ratio), int(self.g * ratio), int(self.b * ratio))
+            colorAll( color )
             show()
-            time.sleep(500/1000.0)
+            time.sleep(self.speed/1000.0)
 
     def draw(self, client_id, kwargs):
         hex_color = kwargs.get('color', '#FFFFFF')
-        color = Color(*hex_to_rgb(hex_color))
-        colorAll( color)
+        self.speed  = kwargs.get('speed', 30)
+        self.fade  = bool(kwargs.get('fade', 1))
+        self.r, self.g, self.b = hex_to_rgb(hex_color)
+
 
 class SnowflakeAnim(BaseAnim):
     def _anim(self):
