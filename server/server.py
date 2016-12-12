@@ -120,6 +120,11 @@ ANIMATIONS = {
         'name': 'speed',
         'label': 'speed',
         'default': 30
+      },{
+        'type': 'number',
+        'name': 'step',
+        'label': 'step',
+        'default': 10
       },
       {
         'type': 'number',

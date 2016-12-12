@@ -539,18 +539,21 @@ class ColorTestAnim(BaseAnim):
     fadeLevel = 0
     fadeIn = True
     speed = 30
+    step = 10
     def _anim(self):
         clear()
         while self.isRunning:
             color = Color(self.r, self.g, self.b)
             if self.fade:
                 if self.fadeIn:
-                    self.fadeLevel += 1
+                    self.fadeLevel += self.step
                     if self.fadeLevel > 255:
+                        self.fadeLevel = 255
                         self.fadeIn = False
                 else:
-                    self.fadeLevel -= 1
+                    self.fadeLevel -= self.step
                     if self.fadeLevel < 0:
+                        self.fadeLevel = 0
                         self.fadeIn = True
                 ratio = self.fadeLevel / 256.0
                 color = Color(int(self.r * ratio), int(self.g * ratio), int(self.b * ratio))
@@ -561,6 +564,7 @@ class ColorTestAnim(BaseAnim):
     def draw(self, client_id, kwargs):
         hex_color = kwargs.get('color', '#FFFFFF')
         self.speed  = kwargs.get('speed', 30)
+        self.step  = kwargs.get('step', 10)
         self.fade  = bool(kwargs.get('fade', 1))
         self.r, self.g, self.b = hex_to_rgb(hex_color)
 
