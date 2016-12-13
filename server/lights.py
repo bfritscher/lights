@@ -569,6 +569,55 @@ class ColorTestAnim(BaseAnim):
         self.r, self.g, self.b = hex_to_rgb(hex_color)
 
 
+class Trail(object):
+    def __init__(self, start, stop, color, length=10):
+        self.trail = []
+        self.start = start
+        self.stop = stop
+        self.r, self.g, self.b = color
+        self.length = length
+
+    def update(self):
+        if len(self.trail) > 0:
+            pos = self.trail[-1]
+            if self.start > self.stop:
+                if pos > self.stop - self.length:
+                    self.trail.append(pos - 1)
+                if len(self.trail) > self.length or pos < self.stop:
+                    self.trail.pop(0)
+            else:
+                if pos < self.stop + self.length:
+                    self.trail.append(pos + 1)
+                if len(self.trail) > self.length or pos > self.stop:
+                    self.trail.pop(0)
+            self.render()
+        else:
+            # TODO: variable start height?
+            if random.randint(0, 100) > 70:
+                self.trail.append(self.start)
+
+    def render(self):
+        for idx, pos in enumerate(reversed(self.trail)):
+            ratio =  min(1, max(0, (self.length -1.0 -idx) / (self.length -1.0) * 1.2 ))
+            color = Color(int(self.r * ratio), int(self.g * ratio), int(self.b * ratio))
+            if self.start < self.stop and pos <= self.stop:
+                setPixelColor(pos, color)
+            if self.stop < self.start and pos >= self.stop:
+                setPixelColor(pos, color)
+
+
+
+class RainAnim(BaseAnim):
+    def _anim(self):
+        clear()
+        trails = [Trail(start * MATRIX_HEIGHT, start*MATRIX_HEIGHT + MATRIX_HEIGHT-1, (255, 255, 255)) if start % 2 == 1 else Trail(start * MATRIX_HEIGHT + MATRIX_HEIGHT-1, start*MATRIX_HEIGHT, (255, 255, 255)) for start in range(MATRIX_WIDTH)]
+        while self.isRunning:
+            [t.update() for t in trails]
+            show()
+            time.sleep(100 / 1000.0)
+
+
+
 class SnowflakeAnim(BaseAnim):
     def _anim(self):
         clear()

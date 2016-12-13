@@ -8,7 +8,7 @@ import traceback
 
 PORT = 9001
 
-DEFAULT_ANIM = 'TimeAnim'
+DEFAULT_ANIM = 'RainAnim'
 
 ANIMATIONS = {
   'AudioAnim': {
@@ -43,6 +43,10 @@ ANIMATIONS = {
   },
   'TestAnim': {
     'description': 'Default arduino anim',
+    'params': []
+  },
+  'RainAnim': {
+    'description': 'Rain',
     'params': []
   },
   'CountdownAnim': {
