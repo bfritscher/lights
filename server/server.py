@@ -8,7 +8,7 @@ import traceback
 
 PORT = 9001
 
-DEFAULT_ANIM = 'RainAnim'
+DEFAULT_ANIM = 'RandomSparkAnim'
 
 ANIMATIONS = {
   'AudioAnim': {
@@ -48,6 +48,46 @@ ANIMATIONS = {
   'RainAnim': {
     'description': 'Rain',
     'params': []
+  },
+  'RandomSparkAnim': {
+    'description': 'Random Spark Anim',
+    'params': [{
+      'type': 'color',
+      'name': 'color_spark',
+      'label': 'Spark color',
+      'default': '#ffffff'
+    },
+    {
+      'type': 'color',
+      'name': 'color_background',
+      'label': 'Inital background',
+      'default': '#000000'
+    }, {
+      'type': 'live',
+      'live': True,
+      'action': 'config',
+      'params': [{
+        'type': 'color',
+        'name': 'color_spark',
+        'label': 'Color spark',
+        'default': '#ffffff'
+      }, {
+        'type': 'color',
+        'name': 'color_end',
+        'label': 'Color end',
+        'default': '#000000'
+      },{
+        'type': 'boolean',
+        'name': 'color_spark_random',
+        'label': 'Random Spark Color',
+        'default': 0
+      },{
+        'type': 'boolean',
+        'name': 'color_end_random',
+        'label': 'Random Background Color',
+        'default': 0
+      }]
+    }]
   },
   'CountdownAnim': {
     'description': 'Countdown',
@@ -131,7 +171,7 @@ ANIMATIONS = {
         'default': 10
       },
       {
-        'type': 'number',
+        'type': 'boolean',
         'name': 'fade',
         'label': 'Fade',
         'default': 1

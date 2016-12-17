@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 import random
+from random import randint
 import abc
 from neopixel import *
 
@@ -219,6 +220,10 @@ def hex_to_rgb(value):
     value = value.lstrip('#')
     lv = len(value)
     return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
+
+
+def random_rgb():
+    return (random.randint(10, 255), random.randint(10, 255), random.randint(10, 255))
 
 
 class BaseAnim(object):
@@ -540,6 +545,8 @@ class ColorTestAnim(BaseAnim):
     fadeIn = True
     speed = 30
     step = 10
+
+
     def _anim(self):
         clear()
         while self.isRunning:
@@ -616,6 +623,60 @@ class RainAnim(BaseAnim):
             show()
             time.sleep(100 / 1000.0)
 
+
+class Spark(object):
+    def __init__(self, led, color_spark, color_end=(0,0,0), fade_out_steps=10, on_time=4):
+        self.step = 0
+        self.led = led
+        self.r, self.g, self.b = color_spark
+        r2, g2, b2 = color_end
+        self.dr = (self.r - r2) / float(fade_out_steps)
+        self.dg = (self.g - g2) / float(fade_out_steps)
+        self.db = (self.b - b2) / float(fade_out_steps)
+        self.fade_out_steps = fade_out_steps
+        self.on_time = on_time
+
+    def render(self):
+        setPixelColorRGB(self.led,
+                       int(self.r - (self.dr * self.step)),
+                       int(self.g - (self.dg * self.step)),
+                       int(self.b - (self.db * self.step)))
+        if self.on_time > 0:
+            self.on_time -= 1
+        else:
+            self.step += 1
+        return self.step <= self.fade_out_steps
+
+
+class RandomSparkAnim(BaseAnim):
+    def __init__(self, client_id, kwargs):
+        super(RandomSparkAnim, self).__init__(client_id, kwargs)
+        self.color_spark = hex_to_rgb(kwargs.get('color_spark', '#ffffff'))
+        self.color_end = hex_to_rgb(kwargs.get('color_background', '#000000'))
+        self.color_spark_random = False
+        self.color_end_random = False
+
+    def _anim(self):
+        sparks = []
+        colorAll(Color(*self.color_end))
+        show()
+        while self.isRunning:
+            if self.color_spark_random:
+                self.color_spark = random_rgb()
+            if self.color_end_random:
+                self.color_end = random_rgb()
+            sparks.append(Spark(randint(0, LED_COUNT -1), self.color_spark, self.color_end, randint(5, 15), randint(1, 10)))
+            sparks = [s for s in sparks if s.render()]
+            show()
+            time.sleep(100 / 1000.0)
+
+    def config(self, client_id, kwargs):
+        hex_color = kwargs.get('color_end', '#000000')
+        self.color_end = hex_to_rgb(hex_color)
+        hex_color = kwargs.get('color_spark', '#ffffff')
+        self.color_spark = hex_to_rgb(hex_color)
+        self.color_spark_random  = bool(kwargs.get('color_spark_random', 0))
+        self.color_end_random  = bool(kwargs.get('color_end_random', 0))
 
 
 class SnowflakeAnim(BaseAnim):
@@ -711,7 +772,7 @@ class GlediatorAnim(BaseAnim):
 # Main program logic follows:
 if __name__ == '__main__':
     print 'Press Ctrl-C to quit.'
-    anim = TestAnim()
+    anim = TestAnim(1, ())
     anim.start()
 
 
