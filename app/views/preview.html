@@ -41,13 +41,13 @@
                             <input ng-model="pp.default" type="{{pp.type}}">
                         </md-input-container>
                         <md-input-container ng-if="pp.type == 'color'">
-                            <span>{{pp.label}}</span>
+                            <p>{{pp.label}} ({{pp.default}})</p>
                             <spectrum-colorpicker
+                                ng-init="preview.colorPickerOptions.color= pp.default"
                                 ng-model="pp.default"
                                 options="preview.colorPickerOptions"
                                 on-change="preview.liveParam(param)"
                             ></spectrum-colorpicker>
-                            {{pp.default}}
                         </md-input-container>
                     </div>
                     <audio-player ng-if="param.type == 'audio' && preview.com.config.client_id == preview.com.config.queue[0].client_id"></audio-player>
@@ -80,11 +80,14 @@
                         <label ng-if="param.type == 'text' || param.type == 'number'">{{param.label}}</label>
                         <input ng-if="param.type == 'text' || param.type == 'number'" ng-model="param.default" type="{{param.type}}">
 
-                        <p ng-if="param.type == 'color'">{{param.label}}</p>
-                        <spectrum-colorpicker  ng-if="param.type == 'color'"
-                            ng-model="param.default"
-                            options="preview.colorPickerOptions"
-                        ></spectrum-colorpicker>
+                        <div ng-if="param.type == 'color'">
+                            <p>{{param.label}} ({{param.default}})</p>
+                            <spectrum-colorpicker
+                                ng-model="param.default"
+                                ng-init="preview.colorPickerOptions.color=param.default"
+                                options="preview.colorPickerOptions"
+                            ></spectrum-colorpicker>
+                        </div>
                 </md-input-container>
             </md-card-content>
             <md-card-actions layout="row" layout-align="end center">
