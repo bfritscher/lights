@@ -20,9 +20,9 @@ angular.module('lightsApp')
 
      function connect(){
         // Connect to Web Socket
-        //ws = new WebSocket("ws://ne.fritscher.ch:9001/");
+        ws = new WebSocket("ws://ne.fritscher.ch:9001/");
         //ws = new WebSocket("ws://192.168.101.154:9001/");
-        ws = new WebSocket("ws://127.0.0.1:9001/");
+        //ws = new WebSocket("ws://127.0.0.1:9001/");
 
         ws.onmessage = function(e) {
             $timeout(function(){
