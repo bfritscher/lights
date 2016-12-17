@@ -3,12 +3,12 @@
 angular.module('lightsApp')
   .directive('snowflake', function ($rootScope, com) {
     return {
-      template: `<svg width="1000px" height="1000px" viewBox="0 0 2000 2000">
-        <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur id="gauss" stdDeviation="10 10" result="glow"/>
-          <feMerge><feMergeNode in="glow"/><feMergeNode in="glow"/><feMergeNode in="glow"/></feMerge>
-        </filter>
-      </svg>`,
+      template: '<svg width="1000px" height="1000px" viewBox="0 0 2000 2000">' +
+        '<filter id="glow" x="-30%" y="-30%" width="160%" height="160%">' +
+          '<feGaussianBlur id="gauss" stdDeviation="10 10" result="glow"/>' +
+          '<feMerge><feMergeNode in="glow"/><feMergeNode in="glow"/><feMergeNode in="glow"/></feMerge>' +
+        '</filter>' +
+      '</svg>',
       replace: true,
       restrict: 'E',
       link: function postLink(scope, element, attrs) {
