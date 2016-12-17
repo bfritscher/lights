@@ -40,6 +40,9 @@
                             <label>{{pp.label}}</label>
                             <input ng-model="pp.default" type="{{pp.type}}">
                         </md-input-container>
+                        <md-switch ng-if="pp.type == 'boolean'" ng-change="preview.liveParam(param)" class="md-primary" ng-model="pp.default"  ng-true-value="1"  ng-false-value="0">
+                            {{pp.label}}: {{ pp.default == 1 ? 'on' : 'off' }}
+                        </md-switch>
                         <md-input-container ng-if="pp.type == 'color'">
                             <p>{{pp.label}} ({{pp.default}})</p>
                             <spectrum-colorpicker
