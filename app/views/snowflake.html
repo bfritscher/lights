@@ -1,1 +1,11 @@
+
+<div>
+    <md-toolbar ng-if="error" class="md-warn">
+      <h2 class="md-toolbar-tools">
+        <span>{{error}}</span>
+      </h2>
+    </md-toolbar>
+    <ui-codemirror ng-model="animation" ui-codemirror-opts="editorOptions"></ui-codemirror>
+    <p><md-button class="md-primary md-raised" ng-click="send()">Send</md-button></p>
+</div>
 <snowflake></snowflake>

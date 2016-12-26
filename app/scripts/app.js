@@ -13,8 +13,13 @@ angular
     'ngAnimate',
     'ngRoute',
     'ngMaterial',
-    'angularSpectrumColorpicker'
+    'angularSpectrumColorpicker',
+    'ngMQTT',
+    'ui.codemirror'
   ])
+  .config(['MQTTProvider',function(MQTTProvider){
+        MQTTProvider.setHref('ws://192.168.101.1:1884');
+    }])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/editor', {

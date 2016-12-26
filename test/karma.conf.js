@@ -34,6 +34,11 @@ module.exports = function(config) {
       'bower_components/angular-spectrum-colorpicker/dist/angular-spectrum-colorpicker.min.js',
       'bower_components/dropzone/dist/min/dropzone.min.js',
       'bower_components/Snap.svg/dist/snap.svg-min.js',
+      'bower_components/angular-mqtt/src/browserMqtt.js',
+      'bower_components/angular-mqtt/src/angular-MQTT.js',
+      'bower_components/codemirror/lib/codemirror.js',
+      'bower_components/codemirror/mode/python/python.js',
+      'bower_components/angular-ui-codemirror/ui-codemirror.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/scripts/**/*.js",
