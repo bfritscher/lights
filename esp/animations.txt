@@ -1,0 +1,103 @@
+y = Color(255, 255, 0)
+sf.color(off)
+sf.star.color(y)
+wait(300)
+
+sf.star.paint(off)
+sf.trees.trunk.color(w)
+sf.trees.top.color(w)
+wait(300)
+
+sf.trees.trunk.paint(off)
+sf.trees.leaf.color(y)
+wait(300)
+
+---
+
+sf.paint(off)
+for n in range(10):
+  for i in range(6):
+    sf.trees[i-1].paint(off)
+    sf.trees[i].paint(wheel(255/6.0*i))
+    show()
+
+	
+sf.color(off)
+for i in range(156):
+  setPixelColor(i, wheel(255 / 156.0 * i))
+  wait(30)
+  show()
+
+wait(200)
+sf.star.inner.color(Color(255, 255, 255))
+wait(2000)
+
+sf.color(off)
+for i in range(156):
+  setPixelColor(i, wheel(255 / 156.0 * i))
+
+sf.star.inner.color(Color(255, 255, 255))
+show()
+wait(2000)
+
+for n in range(16):
+  for i in range(180):
+    np[i] = tuple([int(x/1.4) for x in np[i]])
+  show()
+
+ -------
+ 
+colors = [Color(255, 0, 0), Color(0, 255, 0)]
+for n in range(20):
+  for i in range(180):
+    setPixelColor(i, colors[i%2])
+  show()
+  colors = list(reversed(colors))
+  wait(180)
+  
+---
+
+colors = [Color(198, 0, 0), Color(50, 168, 0)]
+for n in range(20):
+  for i in range(180):
+    setPixelColor(i, colors[i%2])
+  show()
+  colors = list(reversed(colors))
+  wait(250)
+  
+  
+----
+
+sf.color(off)
+for i in range(300):
+  setPixelColor(randint(0, 179), Color(255, 0, 0))
+  show()
+  wait(20)
+  
+for i in range(300):
+  setPixelColor(randint(0, 179), Color(0, 255, 0))
+  show()
+  wait(20)
+  
+  
+for i in range(300):
+  setPixelColor(randint(0, 179), Color(0, 0, 255))
+  show()
+  wait(20)
+  
+for i in range(300):
+  setPixelColor(randint(0, 179), Color(255, 255, 255))
+  show()
+  wait(20)
+
+  
+-----
+
+for i in range(156):
+  setPixelColor(i, Color(255, 0, 0))
+  setPixelColor((78+i) % 156, Color(0, 255, 0))
+  setPixelColor(i % 24 + 156, Color(255, 255, 0 ))
+  setPixelColor((12 +i) % 24 + 156, Color(0, 0, 0))
+     
+  wait(70)
+  show()
