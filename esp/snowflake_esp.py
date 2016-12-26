@@ -11,7 +11,7 @@ def show():
 
 
 def Color(r, g, b):
-    return (r, g, b)
+    return (int(r), int(g), int(b))
 
 def setPixelColor(i, color):
     np[i] = color
