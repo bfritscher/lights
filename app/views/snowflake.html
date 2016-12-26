@@ -2,7 +2,7 @@
 <div>
     <md-toolbar ng-if="error" class="md-warn">
       <h2 class="md-toolbar-tools">
-        <span>{{error}}</span>
+        <span>{{error[0]}}</span>
       </h2>
     </md-toolbar>
     <div layout="flex">
@@ -37,5 +37,9 @@
     </md-content>
     </div>
     <p><md-button class="md-primary md-raised" ng-click="send()">Send</md-button></p>
+    <spectrum-colorpicker
+        ng-model="color"
+        options="colorPickerOptions"
+    ></spectrum-colorpicker>
 </div>
 <snowflake></snowflake>
