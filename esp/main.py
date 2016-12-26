@@ -19,7 +19,7 @@ animation = "sf.color(w)"
 def sub_cb(topic, msg):
     global animation
     try:
-        animation = msg
+        animation = json.loads(msg)
         print((topic, msg))
     except:
         pass
@@ -37,7 +37,7 @@ def play_animation():
         exec(animation, globals(), locals())
     except Exception as e:
         print(e)
-        c.publish(b"lights/snowflake/error", b"%s" % e)
+        c.publish(b"lights/snowflake/error", b"%s" % json.dumps(e))
         animation = "sf.color(Color(255, 0, 0))"
     delta = time.ticks_ms() - last_anim
     if delta < 500:
