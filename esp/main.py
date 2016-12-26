@@ -3,6 +3,7 @@ from config import MQTT_BROKER
 import time
 import json
 import machine
+import uos
 
 from snowflake_esp import *
 sf = Snowflake(0)
@@ -13,6 +14,9 @@ off = Color(0, 0, 0)
 
 def wait(ms):
    time.sleep(ms/1000.0)
+
+def randint(min, max):
+    return min + int(int.from_bytes(uos.urandom(2)) / 65536.0 * (max - min + 1))
 
 def wheel(pos):
     """Generate rainbow colors across 0-255 positions."""
