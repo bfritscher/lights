@@ -5,7 +5,36 @@
         <span>{{error}}</span>
       </h2>
     </md-toolbar>
-    <ui-codemirror ng-model="animation" ui-codemirror-opts="editorOptions"></ui-codemirror>
+    <div layout="flex">
+    <div flex>
+        <ui-codemirror ng-model="animation" ui-codemirror-opts="editorOptions"></ui-codemirror>
+    </div>
+    <md-content>
+    <pre class="md-whiteframe-1dp">
+        off, w, wait(ms)
+        color(200ms+show), paint, show
+
+        sf.color(Color(255, 0, 0))
+        sf.star.color(Color(0, 255, 0))
+        sf.star.inner.color(Color(0, 0, 255))
+        sf.star.outer.color(Color(0, 0, 255))
+
+        sf.trees[0].color(Color(0, 0, 255))
+        sf.trees[0].trunk.color(Color(0, 255, 0))
+        sf.trees[0].trunk.bottom.color(Color(255, 0, 0))
+        sf.trees[0].trunk.top.color(Color(255, 0, 0))
+        sf.trees[0].leaf.color(Color(255, 0, 0))
+        sf.trees[0].top.color(Color(0, 255, 0))
+
+        sf.trees.color(Color(0, 0, 255))
+        sf.trees.trunk.color(Color(0, 255, 0))
+        sf.trees.trunk.bottom.color(Color(255, 0, 0))
+        sf.trees.trunk.top.color(Color(255, 0, 0))
+        sf.trees.leaf.color(Color(255, 0, 0))
+        sf.trees.top.color(Color(0, 255, 0))
+    </pre>
+    </md-content>
+    </div>
     <p><md-button class="md-primary md-raised" ng-click="send()">Send</md-button></p>
 </div>
 <snowflake></snowflake>
