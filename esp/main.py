@@ -29,6 +29,12 @@ def wheel(pos):
         pos -= 170
         return Color(0, pos * 3, 255 - pos * 3)
 
+def fade(start_color, stop_color, steps, current_step):
+    dr = (start_color[0] - stop_color[0]) / float(steps)
+    dg = (start_color[1] - stop_color[1]) / float(steps)
+    db = (start_color[2] - stop_color[2]) / float(steps)
+    return Color(start_color[0] - (dr * current_step), start_color[1] - (dg * current_step), start_color[2] - (db * current_step))
+
 animation = "sf.color(w)"
 
 def sub_cb(topic, msg):

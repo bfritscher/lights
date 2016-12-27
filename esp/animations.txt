@@ -101,3 +101,22 @@ for i in range(156):
      
   wait(70)
   show()
+  
+  
+def fade(start_color, stop_color, steps, step):
+    dr = (start_color[0] - stop_color[0]) / float(steps)
+    dg = (start_color[1] - stop_color[1]) / float(steps)
+    db = (start_color[2] - stop_color[2]) / float(steps)
+    return Color(start_color[0] - (dr * step), start_color[1] - (dg * step), start_color[2] - (db * step))
+
+sf.color(Color(0,0,255))
+for i in range(21):
+    sf.color(fade(Color(0,0,255), Color(0,255,0), 20, i))
+
+sf.color(Color(0,255,0))
+for i in range(21):
+  sf.color(fade(Color(0,255,0), Color(255,0,0), 20, i))
+
+sf.color(Color(255,0,0))
+for i in range(21):
+  sf.color(fade(Color(255,0,0), Color(0,0,255), 20, i))
