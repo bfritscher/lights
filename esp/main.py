@@ -158,7 +158,7 @@ def default_animation():
     wait(1000)
     sf.trees.color(off)
 
-  for i in range(6):
+  for i in range(3):
     star(Color(255,220,0))
     star(Color(255,0,0))
     star(Color(0,255,0))
