@@ -53,11 +53,19 @@ class Trunk(Leds):
         self.leds = self.top.leds + self.bottom.leds
 
 
+class Leaf(Leds):
+    def __init__(self, start_led):
+        super(Leaf, self).__init__()
+        self.left = Leds(range(start_led + 2, start_led + 8))
+        self.right = Leds(range(start_led + 14, start_led + 20))
+        self.leds = self.left.leds + self.right.leds
+
+
 class Tree(Leds):
     def __init__(self, start_led):
         super(Tree, self).__init__()
         self.trunk = Trunk(start_led)
-        self.leaf = Leds(list(range(start_led + 2, start_led + 8)) + list(range(start_led + 14, start_led + 20)))
+        self.leaf = Leaf(start_led)
         self.top = Leds(self.trunk.top.leds + self.leaf.leds)
         self.leds = self.trunk.leds + self.leaf.leds
 
