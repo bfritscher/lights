@@ -161,6 +161,7 @@ for i in range(6):
   
 -- on/off snake + wheel trunk and leaf
 sf.paint(off)
+sf.star.paint(Color(100,100,100))
 for i in range(156):
   setPixelColor(i, w)
   show()
