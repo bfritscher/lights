@@ -16,6 +16,9 @@ def Color(r, g, b):
 def setPixelColor(i, color):
     np[i] = color
 
+def setPixelsColor(leds, color):
+    [setPixelColor(i, color) for i in leds]
+
 def from_iterable(iterables):
     # chain.from_iterable(['ABC', 'DEF']) --> A B C D E F
     for it in iterables:

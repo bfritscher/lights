@@ -19,5 +19,6 @@ def do_connect():
             pass
         ap_if.active(False)
     print('network config:', sta_if.ifconfig())
-
+    import ntptime
+    ntptime.settime()
 do_connect()

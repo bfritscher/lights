@@ -2,8 +2,8 @@ from umqtt.simple import MQTTClient
 from config import MQTT_BROKER
 import time
 import json
-import machine
 import uos
+import math
 
 from snowflake_esp import *
 sf = Snowflake(0)
@@ -80,145 +80,45 @@ def main():
 
 
 def default_animation():
-  # on/off snake + wheel trunk and leaf
+  t = time.localtime()
+  s = t[5]
+  m = t[4]
+  h = int((t[3] + 1) % 12)
+  r = s % 2.5
+
   sf.paint(off)
-  for i in range(156):
-    setPixelColor(i, w)
-    show()
-    wait(20)
 
-  for i in range(180):
-    setPixelColor(i, off)
-    show()
-    wait(20)
-    if i > 0 and i % 22 == 0:
-      sf.trees[int((i-22)/26)].trunk.bottom.paint(w)
-    if i > 0 and i % 23 == 0:
-      sf.trees[int((i-23)/26)].trunk.top.paint(w)
+  # hours
+  segments = [[], [100, 101], [102, 103],
+              [126, 127], [128, 129],
+              [152, 153], [154, 155],
+              [22, 23],    [24, 25],
+              [48, 49],   [50, 51],
+              [74, 75], [76, 77]]
 
-  for i in range(6):
-    sf.trees[i].leaf.left.color(w)
-    sf.trees[i].leaf.right.color(w)
+  [setPixelsColor(segments[i], wheel(255/12.0 * ((i+6) % 12))) for i in range(h+1)]
 
-  for i in range(6):
-    sf.trees[i].leaf.left.color(off)
-    sf.trees[i].leaf.right.color(off)
+  # minutes
+  m10 = int(m % 10)
+  m6 = int((int(m/10) + 3) % 6)
+  if m10 == 0:
+    sf.trees[m6].trunk.paint(w)
+  else:
+    segments = [[],[0,21],[1,20],[14,19],[15,18],[16,17],[30,31],[29,32],[28,33],[34,39]]
+    [setPixelsColor(map(lambda x: ( m6 * 26 + x ) % 156, segments[i]),  wheel(255 / 6.0 * m6)) for i in range(m10+1)]
 
-  for i in range(6):
-    sf.trees[i].trunk.color(off)
+  # secondes
+  led = math.ceil(s/2.5)
+  if led >= 24:
+    led = 0
+  if r == 0:
+    color = 128
+  else:
+    color = int(r/2.5 * 128)
 
-  sf.star.color(w)
-  wait(1000)
-  sf.star.color(off)
-
-  # big and small star with snowflake transition
-  for i in range(4):
-    y = Color(255, 220, 0)
-    sf.paint(off)
-    sf.star.color(y)
-    wait(1000)
-
-    sf.star.paint(off)
-    sf.trees.color(w)
-    wait(1000)
-
-    sf.trees.trunk.paint(off)
-    sf.trees.leaf.color(y)
-    wait(1000)
-
-  # rotate trunk fade
-  for i in range(4):
-    sf.star.paint(w)
-    for i in range(6):
-        sf.trees[i].trunk.paint(w)
-        sf.trees[i-1 % 6].trunk.paint(fade(w, off, 3, 1))
-        sf.trees[i-2 % 6].trunk.paint(fade(w, off, 3, 2))
-        sf.trees[i-3 % 6].trunk.paint(fade(w, off, 3, 3))
-        show()
-        wait(100)
-
-  # color start expand out
-  sf.color(off)
-  def setPixelsColor(leds, color):
-    [setPixelColor(i, color) for i in leds]
-
-  def setTreesPixelsColor(leds, color):
-    [setPixelsColor(map(lambda x: i * 26 + x , leds), w) for i in range(6)]
-    show()
-    wait(100)
-
-
-  def star(color):
-    sf.star.color(color)
-    setTreesPixelsColor([0,21], w)
-    setTreesPixelsColor([1,20], w)
-    setTreesPixelsColor([2,7,13,8,14,19], w)
-    setTreesPixelsColor([3,6,9,12,15,18], w)
-    setTreesPixelsColor([4,5,10,11,16,17], w)
-    wait(1000)
-    sf.trees.color(off)
-
-  for i in range(3):
-    star(Color(255,220,0))
-    star(Color(255,0,0))
-    star(Color(0,255,0))
-
-  # Fade Red/Green/Blue
-
-  sf.color(Color(0,0,255))
-  for i in range(21):
-      sf.color(fade(Color(0,0,255), Color(0,255,0), 20, i))
-
-  sf.color(Color(0,255,0))
-  for i in range(21):
-    sf.color(fade(Color(0,255,0), Color(255,0,0), 20, i))
-
-  sf.color(Color(255,0,0))
-  for i in range(21):
-    sf.color(fade(Color(255,0,0), Color(0,0,255), 20, i))
-
-
-  # red green snake folowing rotating
-  for i in range(156):
-    setPixelColor(i, Color(255, 0, 0))
-    setPixelColor((78+i) % 156, Color(0, 255, 0))
-    setPixelColor(i % 24 + 156, Color(255, 255, 0 ))
-    setPixelColor((12 +i) % 24 + 156, Color(0, 0, 0))
-
-    wait(70)
-    show()
-
-
-  # red green alternate blinking lighter colors
-  colors = [Color(198, 0, 0), Color(50, 168, 0)]
-  for n in range(20):
-    for i in range(180):
-      setPixelColor(i, colors[i%2])
-    show()
-    colors = list(reversed(colors))
-    wait(250)
-
-
-  # rainbow snake
-
-  sf.color(off)
-  for i in range(156):
-    setPixelColor(i, wheel(255 / 156.0 * i))
-    wait(30)
-    show()
-
+  [setPixelColor(((i + 12) % 24) + 156, [int(x/2) for x in wheel(255 / 24.0 * ((i+12) % 24))]) for i in range(led)]
+  setPixelColor(((led + 12) % 24) + 156, Color(color, color, color))
+  show()
   wait(200)
-  sf.star.inner.color(Color(255, 255, 255))
-  wait(2000)
-
-  # spin colored trees
-  sf.paint(off)
-  sf.star.paint(Color(100,100,100))
-  for n in range(10):
-    for i in range(6):
-      sf.trees[i-1].paint(off)
-      sf.trees[i].paint(wheel(255/6.0*i))
-      show()
-      wait(80)
 
 main()
