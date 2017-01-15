@@ -1,5 +1,5 @@
-from umqtt.simple import MQTTClient
-from config import MQTT_BROKER
+#from umqtt.simple import MQTTClient
+#from config import MQTT_BROKER
 import time
 import json
 import uos
@@ -49,8 +49,8 @@ def sub_cb(topic, msg):
 
 last_anim = time.ticks_ms()
 
-c = MQTTClient("umqtt_client", MQTT_BROKER)
-c.set_callback(sub_cb)
+#c = MQTTClient("umqtt_client", MQTT_BROKER)
+#c.set_callback(sub_cb)
 
 
 def play_animation():
@@ -63,7 +63,7 @@ def play_animation():
 
     except Exception as e:
         print(e)
-        c.publish(b"lights/snowflake/error", b"%s" % json.dumps(e))
+        #c.publish(b"lights/snowflake/error", b"%s" % json.dumps(e))
         animation = "sf.color(Color(255, 0, 0))"
     delta = time.ticks_ms() - last_anim
     if delta < 500:
@@ -71,22 +71,25 @@ def play_animation():
     last_anim = time.ticks_ms()
 
 def main():
-    c.connect()
-    c.subscribe(b"lights/snowflake")
+    #c.connect()
+    #c.subscribe(b"lights/snowflake")
     while True:
-            c.check_msg()
+            #c.check_msg()
             play_animation()
 
-    c.disconnect()
+    #c.disconnect()
 
 
+current_h = 0
 def default_animation():
+  global current_h
   t = time.localtime()
   s = t[5]
   m = t[4]
-  if m == 0:
-    ntptime.settime()
   h = int((t[3] + 1) % 12)
+  if m == 0 and current_h != h:
+    ntptime.settime()
+    current_h = h
   r = s % 2.5
 
   sf.paint(off)
