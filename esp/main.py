@@ -4,6 +4,7 @@ import time
 import json
 import uos
 import math
+import ntptime
 
 from snowflake_esp import *
 sf = Snowflake(0)
@@ -83,6 +84,8 @@ def default_animation():
   t = time.localtime()
   s = t[5]
   m = t[4]
+  if m == 0:
+    ntptime.settime()
   h = int((t[3] + 1) % 12)
   r = s % 2.5
 
