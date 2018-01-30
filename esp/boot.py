@@ -6,6 +6,7 @@ import webrepl
 from config import SSID, SHARED_KEY
 webrepl.start()
 gc.collect()
+timeout = 0
 
 def do_connect():
     import network
@@ -15,8 +16,8 @@ def do_connect():
         print('connecting to network...')
         sta_if.active(True)
         sta_if.connect(SSID, SHARED_KEY)
-        while not sta_if.isconnected():
-            pass
+        while not sta_if.isconnected() and timeout < 1000:
+            timeout += 1
         ap_if.active(False)
     print('network config:', sta_if.ifconfig())
 
