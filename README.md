@@ -1,5 +1,15 @@
 # lights
 
+
+## ESP8266 MicroPython version
+
+https://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/intro.html#deploying-the-firmware
+
+http://www.hivemq.com/demos/websocket-client/
+
+192.168.101.1:1884 websocket port
+
+
 ## Hardware
 
 WS2812B-5050-RGB-LED-Strip-5M-150-Leds-Individual-Addressable-5V
@@ -30,3 +40,4 @@ http://www.dorkbotpdx.org/blog/armatronix/led_video_wall
 
 https://github.com/beyondscreen/node-rpi-ws281x-native
 https://github.com/scanlime/fadecandy
+

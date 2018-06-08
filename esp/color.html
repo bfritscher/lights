@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Document Title</title>
+    <meta charset="utf-8" />
+	<script src="https://unpkg.com/mqtt@2.18.0/dist/mqtt.js"></script>
+  <script src="https://rawgit.com/xiaokaike/vue-color/master/dist/vue-color.js"></script>
+  <script src="https://vuejs.org/js/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+        <chrome-picker v-model="colors" :disable-alpha="true" ></chrome-picker>
+        <button @click="setColor">SET</button>
+ 	    <swatches-picker v-model="colors" :palette="history" @input="sendColor"></swatches-picker>
+    </div>
+    <script>
+        /* JavaScript */
+        const client = mqtt.connect('ws://192.168.101.1:1884'); client.on('connect', () => {
+            client.subscribe('lights/candle/error');
+        }); client.on('message', (topic, message) => { // message is Buffer
+            console.log(message.toString());
+        });
+
+        new Vue({
+            el: '#app',
+            components: {
+                'swatches-picker': VueColor.Swatches,
+                'chrome-picker': VueColor.Chrome
+            },
+            data() {
+                 return {
+                      colors: {hex: '#631f06'},
+                      history: [['#631f06']],
+                      i: 0
+                }
+            },
+            methods: {
+                setColor() {
+                    if (this.history[this.i].length % 5 === 0) {
+                        this.history.push([]);
+                        this.i++;
+                    }
+                    this.history[this.i].push(this.colors.hex);
+                    this.sendColor();
+                },
+                sendColor() {
+                    const color = `rgb,${this.colors.rgba.r},${this.colors.rgba.g},${this.colors.rgba.b}`
+                    client.publish('lights/candle', color);
+                    console.log('sent', color);
+                }
+            }
+        });
+
+          </script>
+  </body>
+</html>

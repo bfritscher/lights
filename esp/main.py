@@ -1,14 +1,96 @@
-#from umqtt.simple import MQTTClient
-#from config import MQTT_BROKER
+from umqtt.simple import MQTTClient
+from config import MQTT_BROKER
 import time
 import json
 import uos
 import math
-import ntptime
+import machine, neopixel
 
-from snowflake_esp import *
-sf = Snowflake(0)
-sf.test()
+LED_COUNT = 10
+r = 99
+g = 31
+b = 6
+
+np = neopixel.NeoPixel(machine.Pin(4), LED_COUNT)
+
+def c_brightness(c, brightness):
+    return max(0, min(c * brightness / 100, 255))
+
+class LED_light(object):
+    def __init__(self, pos):
+        self.time = 0
+        self.pos = pos
+
+    def update(self, delta):
+        self.time = self.time - delta
+        if self.time <= 0:
+            self.random_mode()
+            self.random_duration()
+
+    def set_brightness(self, brightness):
+        setPixelColor(self.pos, Color(c_brightness(r, brightness), c_brightness(g, brightness), c_brightness(b, brightness)))
+
+
+    def random_mode(self):
+        # Probability Random LED Brightness
+        # 50% 77% – 80% (its barely noticeable)
+        # 30% 80% – 100% (very noticeable, sim. air flicker)
+        # 5% 50% – 80% (very noticeable, blown out flame)
+        # 5% 40% – 50% (very noticeable, blown out flame)
+        # 10% 30% – 40% (very noticeable, blown out flame)
+        brightness = 0
+        r = randint(0, 100)
+        if r < 50:
+            brightness = randint(77, 80)
+        elif r < 80:
+            brightness = randint(80, 100)
+        elif r < 85:
+            brightness = randint(50, 80)
+        elif r < 90:
+            brightness = randint(40, 50)
+        else:
+            brightness = randint(30, 40)
+        self.set_brightness(brightness)
+
+
+    def random_duration(self):
+        # Probability Random Time
+        # 90% 20 ms
+        #  3% 20 – 30 ms
+        #  3% 10 – 20 ms
+        #  4% 0 – 10 ms
+        r = randint(0, 100)
+        if r < 90:
+            self.time = 20
+        elif r < 93:
+            self.time = randint(20, 30)
+        elif r < 96:
+            self.time = randint(10, 20)
+        else:
+            self.time = randint(0, 10)
+
+candles = [LED_light(i) for i in range(LED_COUNT)]
+
+def candle():
+    start = time.ticks_ms()
+    while time.ticks_ms() - start < 2000:
+        now = time.ticks_ms()
+        [l.update(now) for l in candles]
+        show()
+        wait(2)
+
+def show():
+   np.write()
+
+
+def Color(r, g, b):
+    return (int(r), int(g), int(b))
+
+def setPixelColor(i, color):
+    np[i] = color
+
+def setPixelsColor(leds, color):
+    [setPixelColor(i, color) for i in leds]
 
 w = Color(255, 255, 255)
 off = Color(0, 0, 0)
@@ -17,7 +99,7 @@ def wait(ms):
    time.sleep(ms/1000.0)
 
 def randint(min, max):
-    return min + int(int.from_bytes(uos.urandom(2)) / 65536.0 * (max - min + 1))
+    return min + int(int.from_bytes(uos.urandom(2), 10) / 65536.0 * (max - min + 1))
 
 def wheel(pos):
     """Generate rainbow colors across 0-255 positions."""
@@ -30,6 +112,14 @@ def wheel(pos):
         pos -= 170
         return Color(0, pos * 3, 255 - pos * 3)
 
+def rainbow(wait_ms=20, iterations=1):
+        """Draw rainbow that fades across all pixels at once."""
+        for j in range(256*iterations):
+                for i in range(LED_COUNT):
+                        setPixelColor(i, wheel((i+j) & 255))
+                show()
+                time.sleep(wait_ms/1000.0)
+
 def fade(start_color, stop_color, steps, current_step):
     dr = (start_color[0] - stop_color[0]) / float(steps)
     dg = (start_color[1] - stop_color[1]) / float(steps)
@@ -39,92 +129,49 @@ def fade(start_color, stop_color, steps, current_step):
 animation = ""
 
 def sub_cb(topic, msg):
-    global animation
+    global animation, r, g, b
     try:
-        animation = json.loads(msg)
-        print((topic, msg))
-    except:
-        pass
+        if msg.startswith(b"rgb,") :
+            rgb = msg.split(b",")
+            r = int(rgb[1])
+            g = int(rgb[2])
+            b = int(rgb[3])
+        else:
+            animation = json.loads(msg)
+    except Exception as e:
+        print(topic, msg, e)
 
 
 last_anim = time.ticks_ms()
 
-#c = MQTTClient("umqtt_client", MQTT_BROKER)
-#c.set_callback(sub_cb)
+c = MQTTClient("umqtt_client", MQTT_BROKER)
+c.set_callback(sub_cb)
 
 
 def play_animation():
     global animation, last_anim
     try:
         if animation == "":
-            default_animation()
+            candle()
         else:
             exec(animation, globals(), locals())
 
     except Exception as e:
         print(e)
-        #c.publish(b"lights/snowflake/error", b"%s" % json.dumps(e))
-        animation = "sf.color(Color(255, 0, 0))"
+        c.publish(b"lights/candle/error", b"%s" % json.dumps(e))
+        animation = "setPixelsColor(range(LED_COUNT), Color(255, 0, 0))\nshow()\nwait(300)\nsetPixelsColor(range(LED_COUNT), Color(0, 0, 0))\nshow()\nwait(300)\n"
     delta = time.ticks_ms() - last_anim
     if delta < 500:
         time.sleep((500 - delta) / 1000.0)
     last_anim = time.ticks_ms()
 
 def main():
-    #c.connect()
-    #c.subscribe(b"lights/snowflake")
+    c.connect()
+    c.subscribe(b"lights/candle")
     while True:
-            #c.check_msg()
-            play_animation()
+        c.check_msg()
+        play_animation()
 
-    #c.disconnect()
-
-
-current_h = 0
-def default_animation():
-  global current_h
-  t = time.localtime()
-  s = t[5]
-  m = t[4]
-  h = int((t[3] + 1) % 12)
-  if m == 0 and current_h != h:
-    ntptime.settime()
-    current_h = h
-  r = s % 2.5
-
-  sf.paint(off)
-
-  # hours
-  segments = [[], [100, 101], [102, 103],
-              [126, 127], [128, 129],
-              [152, 153], [154, 155],
-              [22, 23],    [24, 25],
-              [48, 49],   [50, 51],
-              [74, 75], [76, 77]]
-
-  [setPixelsColor(segments[i], wheel(255/12.0 * ((i+6) % 12))) for i in range(h+1)]
-
-  # minutes
-  m10 = int(m % 10)
-  m6 = int((int(m/10) + 3) % 6)
-  if m10 == 0:
-    sf.trees[m6].trunk.paint(w)
-  else:
-    segments = [[],[0,21],[1,20],[14,19],[15,18],[16,17],[30,31],[29,32],[28,33],[34,39]]
-    [setPixelsColor(map(lambda x: ( m6 * 26 + x ) % 156, segments[i]),  wheel(255 / 6.0 * m6)) for i in range(m10+1)]
-
-  # secondes
-  led = math.ceil(s/2.5)
-  if led >= 24:
-    led = 0
-  if r == 0:
-    color = 128
-  else:
-    color = int(r/2.5 * 128)
-
-  [setPixelColor(((i + 12) % 24) + 156, [int(x/2) for x in wheel(255 / 24.0 * ((i+12) % 24))]) for i in range(led)]
-  setPixelColor(((led + 12) % 24) + 156, Color(color, color, color))
-  show()
-  wait(200)
+    c.disconnect()
 
 main()
