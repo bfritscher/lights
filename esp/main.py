@@ -6,7 +6,7 @@ import uos
 import math
 import machine, neopixel
 
-LED_COUNT = 10
+LED_COUNT = 20
 r = 99
 g = 31
 b = 6

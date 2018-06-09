@@ -1,37 +1,105 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Document Title</title>
+    <title>Candle</title>
     <meta charset="utf-8" />
-	<script src="https://unpkg.com/mqtt@2.18.0/dist/mqtt.js"></script>
-  <script src="https://rawgit.com/xiaokaike/vue-color/master/dist/vue-color.js"></script>
-  <script src="https://vuejs.org/js/vue.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/mqtt@2.18.0/dist/mqtt.js"></script>
+    <script src="https://rawgit.com/xiaokaike/vue-color/master/dist/vue-color.js"></script>
+    <script src="https://vuejs.org/js/vue.js"></script>
+    <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <style>
+        .vc-chrome,
+        .vc-swatches {
+            box-shadow: none !important;
+        }
+    </style>
   </head>
   <body>
-    <div id="app">
-        <chrome-picker v-model="colors" :disable-alpha="true" ></chrome-picker>
-        <button @click="setColor">SET</button>
- 	    <swatches-picker v-model="colors" :palette="history" @input="sendColor"></swatches-picker>
-    </div>
+    <v-app id="app">
+            <v-toolbar fixed app>
+                <v-toolbar-title>Candle</v-toolbar-title>
+                <v-spacer></v-spacer>
+            </v-toolbar>
+            <main>
+                <v-content>
+                    <v-jumbotron dark class="red" v-if="error">
+                        <h1>error:</h1>> {{error}}
+                    </v-jumbotron>
+                    <v-container fluid grid-list-md >
+                        <v-layout row wrap>
+                            <v-flex xs12 sm6>
+                                <v-card>
+                                    <v-card-title primary-title>
+                                        Colors
+                                    </v-card-title>
+                                    <chrome-picker v-model="colors" :disable-alpha="true" ></chrome-picker>
+                                    <v-btn color="primary" @click="setColor">SET</v-btn>
+                                    <swatches-picker v-model="colors" :palette="history" @input="sendColor"></swatches-picker>
+                                </v-card>
+                            </v-flex>
+                            <v-flex xs12 sm6>
+                                <v-card>
+                                        <v-card-title primary-title>
+                                            Animation
+                                        </v-card-title>
+                                        <v-text-field
+                                        name="code"
+                                        v-model="code"
+                                        label="code"
+                                        multi-line
+                                      ></v-text-field>
+                                        <code>
+LED_COUNT
+w
+off
+candle()
+wait(s)
+setPixelColor(i, color):
+setPixelsColor(leds, color):
+show()
+Color(r,g,b)
+randint(min, max)
+wheel(pos): """Generate rainbow colors across 0-255 positions."""
+rainbow(wait_ms=20, iterations=1)
+fade(start_color, stop_color, steps, current_step):
+                                        </code>
+                                        <v-btn color="primary" @click="send">Send</v-btn>
+                                </v-card>
+                            </v-flex>
+                            </v-layout>
+                    </v-container>
+                </v-content>
+            </main>
+        </v-app>
     <script>
         /* JavaScript */
-        const client = mqtt.connect('ws://192.168.101.1:1884'); client.on('connect', () => {
-            client.subscribe('lights/candle/error');
-        }); client.on('message', (topic, message) => { // message is Buffer
-            console.log(message.toString());
-        });
-
         new Vue({
             el: '#app',
             components: {
                 'swatches-picker': VueColor.Swatches,
                 'chrome-picker': VueColor.Chrome
             },
+            mounted() {
+                this.client = mqtt.connect('ws://192.168.101.1:1884');
+                this.client.on('connect', () => {
+                    this.client.subscribe('lights/candle/error');
+                });
+                this.client.on('message', (topic, message) => { // message is Buffer
+                    this.error = message.toString();
+                });
+            },
             data() {
                  return {
                       colors: {hex: '#631f06'},
                       history: [['#631f06']],
-                      i: 0
+                      i: 0,
+                      code: '',
+                      error: ''
                 }
             },
             methods: {
@@ -44,9 +112,14 @@
                     this.sendColor();
                 },
                 sendColor() {
+                    this.error = '';
                     const color = `rgb,${this.colors.rgba.r},${this.colors.rgba.g},${this.colors.rgba.b}`
-                    client.publish('lights/candle', color);
+                    this.client.publish('lights/candle', color);
                     console.log('sent', color);
+                },
+                send() {
+                    this.error = '';
+                    this.client.publish('lights/candle', JSON.stringify(this.code));
                 }
             }
         });
